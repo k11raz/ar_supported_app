@@ -13,7 +13,7 @@ extension CustomColorScheme on ThemeData {
       brightness == Brightness.dark ? NColors.darkerGrey : NColors.third;
 
   Color get fieldCustom =>
-      brightness == Brightness.dark ? NColors.black : NColors.white;
+      brightness == Brightness.dark ? Colors.black : NColors.white;
 
   Color get secondaryCustom =>
       brightness == Brightness.dark ? NColors.dark : NColors.primary;

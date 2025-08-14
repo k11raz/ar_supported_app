@@ -1,7 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:bus/app/core/constants/colors.dart';
 import 'package:bus/app/core/constants/sizes.dart';
 import 'package:flutter/material.dart';
 
+@RoutePage()
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
 
@@ -12,83 +14,35 @@ class HomeView extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(
-              height: 350,
-              width: double.infinity,
-              child: Image.asset(
-                'image/images/gp_logo.png',
-                fit: BoxFit.cover,
-              ),
-            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   SizedBox(
-                    height: 250,
+                    height: 70,
                     width: double.infinity,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: Image.asset(
-                        'image/images/img1.jpg',
-                        fit: BoxFit.cover,
-                      ),
+                    child: Image.asset(
+                      'image/logos/logo2.png',
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) =>
+                          const Center(child: Text('Logo not found')),
                     ),
                   ),
-                  const SizedBox(height: NSizes.spaceBtwInputFields),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                        "YENİ",
-                        style: Theme.of(context).textTheme.titleSmall,
-                        textAlign: TextAlign.end,
-                      ),
-                      Text(
-                        "GÜRAL PORSELEN KOLEKSİYONU",
-                        style: Theme.of(context).textTheme.titleSmall,
-                        textAlign: TextAlign.end,
-                      ),
-                      Text(
-                        "YAZ 2025",
-                        style: Theme.of(context).textTheme.titleSmall,
-                        textAlign: TextAlign.end,
-                      ),
-                    ],
+
+                  SizedBox(height: 196,),
+                  _CollectionCard(
+                    imageUrl: 'image/images/img1.jpg',
+                    title: "YENİ",
+                    collectionName: "GÜRAL PORSELEN KOLEKSİYONU",
+                    season: "YAZ 2025",
                   ),
-                  const SizedBox(height: 144),
-                  SizedBox(
-                    height: 250,
-                    width: double.infinity,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: Image.asset(
-                        'image/images/img1.jpg',
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: NSizes.spaceBtwInputFields),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                        "YENİ",
-                        style: Theme.of(context).textTheme.titleSmall,
-                        textAlign: TextAlign.end,
-                      ),
-                      Text(
-                        "GÜRAL PORSELEN KOLEKSİYONU",
-                        style: Theme.of(context).textTheme.titleSmall,
-                        textAlign: TextAlign.end,
-                      ),
-                      Text(
-                        "YAZ 2025",
-                        style: Theme.of(context).textTheme.titleSmall,
-                        textAlign: TextAlign.end,
-                      ),
-                    ],
+                  SizedBox(height: 196),
+                  _CollectionCard(
+                    imageUrl: 'image/images/img2.jpg',
+                    title: "ÖZEL",
+                    collectionName: "GELENEKSEL KOLEKSİYON",
+                    season: "KIŞ 2024",
                   ),
                 ],
               ),
@@ -96,6 +50,78 @@ class HomeView extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _CollectionCard extends StatelessWidget {
+  const _CollectionCard({
+    required this.imageUrl,
+    required this.title,
+    required this.collectionName,
+    required this.season,
+  });
+
+  final String imageUrl;
+  final String title;
+  final String collectionName;
+  final String season;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Container(
+          height: 250,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withValues(alpha: 0.3),
+                spreadRadius: 1,
+                blurRadius: 7,
+                offset: const Offset(0, 3),
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Image.asset(
+              imageUrl,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) =>
+                  const Center(child: Text('Image not found')),
+            ),
+          ),
+        ),
+        const SizedBox(height: NSizes.spaceBtwInputFields),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+              title,
+              style: textTheme.titleSmall!.copyWith(color: Colors.black87),
+              textAlign: TextAlign.end,
+            ),
+            Text(
+              collectionName,
+              style: textTheme.titleSmall!.copyWith(
+                color: Colors.black87,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.end,
+            ),
+            Text(
+              season,
+              style: textTheme.titleSmall!.copyWith(color: Colors.black87),
+              textAlign: TextAlign.end,
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

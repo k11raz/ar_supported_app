@@ -1,26 +1,30 @@
-import 'package:bus/app/domain/entities/user.dart';
-import 'package:bus/app/domain/usecases/get_user.dart';
+import 'dart:developer';
+
+import 'package:bus/app/domain/entities/product.dart';
+import 'package:bus/app/domain/usecases/products/get_product.dart';
 import 'package:bus/app/presentation/search/event.dart';
 import 'package:bus/app/presentation/search/state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class UserBloc extends Bloc<UserEvent, UserState> {
-  final GetUsers getUsers;
+class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
+  final GetProducts getProducts;
 
-  UserBloc(this.getUsers) : super(UserInitial()) {
-    on<LoadUsers>(_onLoadUsers);
+  ProductsBloc(this.getProducts) : super(ProductsInitial()) {
+    on<FetchProductsEvent>(_onLoadProducts);
   }
 
-  Future<void> _onLoadUsers(
-    LoadUsers event,
-    Emitter<UserState> emit,
+  Future<void> _onLoadProducts(
+    FetchProductsEvent event,
+    Emitter<ProductsState> emit,
   ) async {
-    emit(UserLoading());
+    emit(ProductsLoading());
     try {
-      final List<UserEntity> users = await getUsers();
-      emit(UserLoaded(users));
+      final List<ProductEntity> products = await getProducts();
+      emit(ProductsLoaded(products));
+      print(products);
     } catch (e) {
-      emit(UserError('Kullanıcılar yüklenemedi.'));
+      emit(ProductsError('Ürünler yüklenemedi.'));
+      log(e.toString());
     }
   }
 }

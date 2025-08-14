@@ -1,7 +1,6 @@
 import 'package:bus/app/core/constants/colors.dart';
 import 'package:bus/app/core/extensions/color_helper.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class LoginForm extends StatelessWidget {
   const LoginForm({super.key});

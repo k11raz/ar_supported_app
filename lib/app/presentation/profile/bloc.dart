@@ -17,6 +17,7 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
     emit(UsersLoading());
     try {
       final users = await getUsers();
+      print(users);
       emit(UsersLoaded(users));
     } catch (e) {
       emit(UsersError(e.toString()));

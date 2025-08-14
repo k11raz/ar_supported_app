@@ -7,6 +7,7 @@ class SupabaseUserRemoteDatasource implements UserRemoteDatasource {
   @override
   Future<List<Map<String, dynamic>>> getUsers() async {
     final response = await dio.get('users');
+    print(response);
     return List<Map<String, dynamic>>.from(response.data);
   }
 
@@ -18,22 +19,14 @@ class SupabaseUserRemoteDatasource implements UserRemoteDatasource {
   Future<Map<String, dynamic>?> getUserById(int id) async {
     final response = await dio.get(
       'users',
-      queryParameters: {
-        'id': 'eq.$id',
-        'select': '*',
-      },
+      queryParameters: {'id': 'eq.$id', 'select': '*'},
     );
     if (response.data.isEmpty) return null;
     return Map<String, dynamic>.from(response.data.first);
   }
 
   Future<void> deleteUserById(int id) async {
-    await dio.delete(
-      'users',
-      queryParameters: {
-        'id': 'eq.$id',
-      },
-    );
+    await dio.delete('users', queryParameters: {'id': 'eq.$id'});
   }
 
   Future<bool> authenticate(String email, String password) async {
@@ -48,4 +41,3 @@ class SupabaseUserRemoteDatasource implements UserRemoteDatasource {
     return response.data.isNotEmpty;
   }
 }
-

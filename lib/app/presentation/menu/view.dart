@@ -1,11 +1,19 @@
-import 'package:bus/app/app.dart';
+import 'package:auto_route/auto_route.dart';
+import 'package:bus/app/data/datasources/remote/category.dart';
+import 'package:bus/app/data/repositories/category_impl.dart';
+import 'package:bus/app/domain/usecases/category/get_category.dart';
+import 'package:bus/app/presentation/category/bloc.dart';
+import 'package:bus/app/presentation/category/event.dart';
+import 'package:bus/app/presentation/category/state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+@RoutePage()
 class MenuView extends StatelessWidget {
   const MenuView({super.key});
 
   @override
-  Widget build(BuildContext context) {
+Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       body: Padding(
@@ -14,23 +22,70 @@ class MenuView extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 70),
-            Row(
-              children: [
-                Text("WOMAN", style: Theme.of(context).textTheme.titleMedium),
+            SizedBox(
+                height: 24,
+                child: BlocProvider(
+                  create: (_) => CategoryBloc(
+                    GetCategory(
+                      CategoryRepositoryImpl(
+                        SupabaseCategoryRemoteDatasource(),
+                      ),
+                    ),
+                  )..add(FetchCategoryEvent()),
+                  child: BlocBuilder<CategoryBloc, CategoryState>(
+                    builder: (context, state) {
+                      if (state is CategoryLoading) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
 
-                SizedBox(width: NSizes.spaceBtwItems),
+                      if (state is CategoryError) {
+                        return Center(
+                          child: Text(
+                            "Hata: ${state.message}",
+                            style: const TextStyle(color: Colors.red),
+                          ),
+                        );
+                      }
 
-                Text("MAN", style: Theme.of(context).textTheme.titleMedium),
+                      if (state is CategoryLoaded) {
+                        if (state.categories.isEmpty) {
+                          return const Center(
+                            child: Text(
+                              "Henüz Kategori yok",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white,
+                              ),
+                            ),
+                          );
+                        }
 
-                SizedBox(width: NSizes.spaceBtwItems),
+                        return ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: state.categories.length,
+                          itemBuilder: (context, index) {
+                            final category = state.categories[index];
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 24.0),
+                              child: Text(
+                                category.name,
+                                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      }
 
-                Text("KIDS", style: Theme.of(context).textTheme.titleMedium),
-
-                SizedBox(width: NSizes.spaceBtwItems),
-
-                Text("HOME", style: Theme.of(context).textTheme.titleMedium),
-              ],
-            ),
+                      return const SizedBox.shrink();
+                    },
+                  ),
+                ),
+              ),
 
             SizedBox(height: 64),
 
@@ -45,11 +100,73 @@ class MenuView extends StatelessWidget {
             Text("AUTUMN WINTER COLLECTION"),
             SizedBox(height: 32),
 
-            Text("THE NEW"),
-            SizedBox(height: 8),
-            Text("50TH ANNIVERSARY"),
-            SizedBox(height: 8),
-            Text("DENIM TOUCH"),
+            Expanded(
+              child: BlocProvider(
+                create: (_) => CategoryBloc(
+                  GetCategory(
+                    CategoryRepositoryImpl(
+                      SupabaseCategoryRemoteDatasource(),
+                    ),
+                  ),
+                )..add(FetchCategoryEvent()),
+                child: BlocBuilder<CategoryBloc, CategoryState>(
+                  builder: (context, state) {
+                    if (state is CategoryLoading) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+
+                    if (state is CategoryError) {
+                      return Center(
+                        child: Text(
+                          "Hata: ${state.message}",
+                          style: const TextStyle(color: Colors.red),
+                        ),
+                      );
+                    }
+
+                    if (state is CategoryLoaded) {
+                      if (state.categories.isEmpty) {
+                        return const Center(
+                          child: Text(
+                            "Henüz Kategori yok",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                            ),
+                          ),
+                        );
+                      }
+
+                      
+                      return ListView.separated(
+                        scrollDirection: Axis.vertical,
+                        itemCount: state.categories.length,
+                        itemBuilder: (context, index) {
+                          final category = state.categories[index];
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 24.0),
+                            child: Text(
+                              category.name,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge
+                                  ?.copyWith(color: Colors.white),
+                            ),
+                          );
+                        },
+                        separatorBuilder: (context, index) =>
+                            const SizedBox(height: 8),
+                      );
+                    }
+
+                    return const SizedBox.shrink();
+                  },
+                ),
+              ),
+            )
           ],
         ),
       ),

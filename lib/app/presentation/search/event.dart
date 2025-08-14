@@ -1,10 +1,10 @@
 import 'package:equatable/equatable.dart';
 
-abstract class UserEvent extends Equatable {
-  const UserEvent();
+abstract class ProductsEvent extends Equatable {
+  const ProductsEvent();
 
   @override
   List<Object> get props => [];
 }
 
-class LoadUsers extends UserEvent {}
+class FetchProductsEvent extends ProductsEvent {}

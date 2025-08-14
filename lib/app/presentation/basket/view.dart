@@ -1,7 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:bus/app/core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
+@RoutePage()
 class BasketView extends StatelessWidget {
   const BasketView({super.key});
 

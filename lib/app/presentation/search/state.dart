@@ -1,33 +1,33 @@
-import 'package:bus/app/domain/entities/user.dart';
+import 'package:bus/app/domain/entities/product.dart';
 import 'package:equatable/equatable.dart';
 
-class UserState extends Equatable {
-  const UserState();
+class ProductsState extends Equatable {
+  const ProductsState();
 
-  UserState copyWith({int? count}) {
-    return UserState();
+  ProductsState copyWith({int? count}) {
+    return ProductsState();
   }
 
   @override
   List<Object> get props => [];
 }
 
-class UserInitial extends UserState {}
+class ProductsInitial extends ProductsState {}
 
-class UserLoading extends UserState {}
+class ProductsLoading extends ProductsState {}
 
-class UserLoaded extends UserState {
-  final List<UserEntity> users;
-  const UserLoaded(this.users);
+class ProductsLoaded extends ProductsState {
+  final List<ProductEntity> products;
+  const ProductsLoaded(this.products);
 
   @override
-  List<Object> get props => [users];
+  List<Object> get props => [products];
 }
 
-class UserError extends UserState {
+class ProductsError extends ProductsState {
   final String message;
 
-  const UserError(this.message);
+  const ProductsError(this.message);
 
   @override
   List<Object> get props => [message];

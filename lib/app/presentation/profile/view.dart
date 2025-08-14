@@ -1,5 +1,6 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:bus/app/data/datasources/remote/user_remote.dart';
-import 'package:bus/app/data/repositories/user_repository.dart';
+import 'package:bus/app/data/repositories/user_impl.dart';
 import 'package:bus/app/domain/usecases/get_user.dart';
 import 'package:bus/app/presentation/profile/bloc.dart';
 import 'package:bus/app/presentation/profile/event.dart';
@@ -7,8 +8,9 @@ import 'package:bus/app/presentation/profile/state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class UsersPage extends StatelessWidget {
-  const UsersPage({super.key});
+@RoutePage()
+class UserView extends StatelessWidget {
+  const UserView({super.key});
 
   @override
   Widget build(BuildContext context) {
