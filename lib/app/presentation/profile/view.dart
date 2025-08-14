@@ -1,12 +1,12 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:bus/app/data/datasources/remote/user_remote.dart';
-import 'package:bus/app/data/repositories/user_impl.dart';
-import 'package:bus/app/domain/usecases/get_user.dart';
+import 'package:bus/app/data/datasources/remote/auth.dart';
+import 'package:bus/app/data/repositories/auth_impl.dart';
+import 'package:bus/app/domain/usecases/auth/sign_in.dart';
 import 'package:bus/app/presentation/profile/bloc.dart';
-import 'package:bus/app/presentation/profile/event.dart';
-import 'package:bus/app/presentation/profile/state.dart';
+import 'package:bus/app/presentation/profile/widgets/login_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../app.dart';
 
 @RoutePage()
 class UserView extends StatelessWidget {
@@ -14,76 +14,45 @@ class UserView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authRemoteDataSource = SupabaseAuthRemoteDataSource(dio: DioClient.dio);
+    final authRepository = AuthRepositoryImpl(authRemoteDataSource);
+    final signInUseCase = SignInUseCase(authRepository);
     return BlocProvider(
-      create: (_) => UsersBloc(
-        GetUsers(
-          UserRepositoryImpl(
-            SupabaseUserRemoteDatasource(),
-          ),
-        ),
-      )..add(FetchUsersEvent()),
+      create: (_) => LoginBloc(signInUseCase),
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text("Kullanıcılar"),
-          centerTitle: true,
-        ),
-        body: BlocBuilder<UsersBloc, UsersState>(
-          builder: (context, state) {
-            if (state is UsersLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            if (state is UsersError) {
-              return Center(
-                child: Text(
-                  "Hata: ${state.message}",
-                  style: const TextStyle(color: Colors.red),
-                ),
-              );
-            }
-
-            if (state is UsersLoaded) {
-              if (state.users.isEmpty) {
-                return const Center(
-                  child: Text(
-                    "Henüz kullanıcı yok",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                  ),
-                );
-              }
-
-              return RefreshIndicator(
-                onRefresh: () async {
-                  context.read<UsersBloc>().add(FetchUsersEvent());
-                },
-                child: ListView.separated(
-                  itemCount: state.users.length,
-                  separatorBuilder: (_, __) => const Divider(height: 1),
-                  itemBuilder: (context, index) {
-                    final user = state.users[index];
-                    return ListTile(
-                      leading: CircleAvatar(
-                        child: Text(user.name.isNotEmpty ? user.name[0] : "?"),
-                      ),
-                      title: Text(user.name),
-                      subtitle: Text(user.email),
-                      trailing: Text(
-                        user.role.name,
-                        style: TextStyle(
-                          color: user.role.name == "admin"
-                              ? Colors.red
-                              : Colors.green,
-                          fontWeight: FontWeight.bold,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 24.0),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  SignInForm(),
+                  
+                  SizedBox(height: 4),
+      
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        style: ButtonStyle(
+                          padding: WidgetStatePropertyAll(EdgeInsets.all(0)),
                         ),
+                        child: Text(
+                          "Bir hesabınız yok mu?",
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                        onPressed: () {
+                          context.router.push(SignupRoute());
+                        },
                       ),
-                    );
-                  },
-                ),
-              );
-            }
-
-            return const Center(child: Text("Kullanıcılar yüklenmedi"));
-          },
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );

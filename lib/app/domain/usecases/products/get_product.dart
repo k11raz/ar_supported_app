@@ -5,7 +5,7 @@ class GetProducts {
   final ProductRepository repository;
   GetProducts(this.repository);
 
-  Future<List<ProductEntity>> call() async {
+  Future<List<ProductEntity>> call(String? categoryId) async {
     return await repository.fetchProducts();
   }
 }

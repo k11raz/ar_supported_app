@@ -1,14 +1,14 @@
 import 'dart:developer';
 
 import 'package:bus/app/data/datasources/remote/remote.dart';
-import 'package:bus/app/data/network/dio_client.dart';
+import 'package:bus/app/network/dio_client.dart';
 
 class SupabaseCategoryRemoteDatasource implements CategoryRemoteDataSource {
   final dio = DioClient.dio;
 
   @override
   Future<List<Map<String, dynamic>>> getCategories() async {
-    final response = await dio.get('products');
+    final response = await dio.get('categories');
     log("Supabase categories: $response");
     return List<Map<String, dynamic>>.from(response.data);
   }

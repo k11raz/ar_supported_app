@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bus/app/domain/entities/category.dart';
 import 'package:bus/app/domain/repositories/category_repository.dart';
 
@@ -6,6 +8,8 @@ class GetCategory {
   GetCategory(this.repository);
 
   Future<List<CategoryEntity>> call() async {
-    return await repository.fetchCategories();
+    List<CategoryEntity> response = await repository.fetchCategories();
+    log(response.toString());
+    return response;
   }
 }

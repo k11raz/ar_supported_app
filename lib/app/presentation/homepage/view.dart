@@ -23,7 +23,7 @@ class HomeView extends StatelessWidget {
                     height: 70,
                     width: double.infinity,
                     child: Image.asset(
-                      'image/logos/logo2.png',
+                      'image/logos/logo3.png',
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) =>
                           const Center(child: Text('Logo not found')),

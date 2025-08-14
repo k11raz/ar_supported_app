@@ -1,0 +1,37 @@
+import '../../app.dart';
+
+class AuthRepositoryImpl implements AuthRepository {
+  final AuthRemoteDataSource remoteDataSource;
+
+  AuthRepositoryImpl(this.remoteDataSource);
+
+  @override
+  Future<UserEntity> signUp({
+    required String email,
+    required String password,
+    required String name,
+    required String surname,
+    String? phone,
+  }) async {
+    final model = await remoteDataSource.signUp(
+      email: email,
+      password: password,
+      name: name,
+      surname: surname,
+      phone: phone,
+    );
+
+    // Burada model'i entity'ye çeviriyoruz
+    return model.toEntity();
+  }
+  
+  @override
+  Future<UserEntity> signIn({required String email, required String password}) async {
+    final model = await remoteDataSource.signIn(
+      email: email,
+      password: password,
+    );
+
+    return model.toEntity();
+  }
+}

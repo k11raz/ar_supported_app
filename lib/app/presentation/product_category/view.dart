@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 @RoutePage()
-class SearchView extends StatelessWidget {
-  const SearchView({super.key});
+class ProductCategoryView extends StatelessWidget {
+  const ProductCategoryView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,83 +19,6 @@ class SearchView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 48),
-
-              SizedBox(
-                height: 24,
-                child: BlocProvider(
-                  create: (_) => CategoryBloc(
-                    GetCategory(
-                      CategoryRepositoryImpl(
-                        SupabaseCategoryRemoteDatasource(),
-                      ),
-                    ),
-                  )..add(FetchCategoryEvent()),
-                  child: BlocBuilder<CategoryBloc, CategoryState>(
-                    builder: (context, state) {
-                      if (state is CategoryLoading) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-
-                      if (state is CategoryError) {
-                        return Center(
-                          child: Text(
-                            "Hata: ${state.message}",
-                            style: const TextStyle(color: Colors.red),
-                          ),
-                        );
-                      }
-
-                      if (state is CategoryLoaded) {
-                        if (state.categories.isEmpty) {
-                          return const Center(
-                            child: Text(
-                              "Henüz Kategori yok",
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.white,
-                              ),
-                            ),
-                          );
-                        }
-
-                        return ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: state.categories.length,
-                          itemBuilder: (context, index) {
-                            final category = state.categories[index];
-                            return InkWell(
-                              onTap: () {
-                                context.router.push(ProductCategoryRoute());
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.only(right: 24.0),
-                                child: Text(
-                                  category.name,
-                                  style: textTheme.titleLarge?.copyWith(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        );
-                      }
-
-                      return const SizedBox.shrink();
-                    },
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 48),
-
-              NSearchContainer(),
-
-              const SizedBox(height: 48),
-              const Divider(color: Colors.white24),
-              const SizedBox(height: 48),
 
               Expanded(
                 child: BlocProvider(

@@ -11,6 +11,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
 
   @override
   Future<List<CategoryEntity>> fetchCategories() async {
+    
     final dataList = await remoteDatasource.getCategories();
     return dataList
         .map((json) => CategoryModel.fromJson(json).toEntity())

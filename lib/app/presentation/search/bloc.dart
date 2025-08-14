@@ -11,6 +11,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
 
   ProductsBloc(this.getProducts) : super(ProductsInitial()) {
     on<FetchProductsEvent>(_onLoadProducts);
+    on<FetchProductsByCategoryEvent>(onFetchProductsByCategory);
   }
 
   Future<void> _onLoadProducts(
@@ -26,5 +27,14 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
       emit(ProductsError('Ürünler yüklenemedi.'));
       log(e.toString());
     }
+  }
+
+  Future<void> onFetchProductsByCategory(
+    FetchProductsByCategoryEvent event,
+    Emitter<ProductsState> emit,
+  ) async {
+    emit(ProductsLoading());
+    final result = await getProducts(categoryId: event.categoryId);
+    emit(ProductsLoaded(result));
   }
 }

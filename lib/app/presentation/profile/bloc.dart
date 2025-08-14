@@ -1,26 +1,26 @@
-import 'package:bus/app/domain/usecases/get_user.dart';
+import 'package:bus/app/domain/usecases/auth/sign_in.dart';
 import 'package:bus/app/presentation/profile/event.dart';
 import 'package:bus/app/presentation/profile/state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class UsersBloc extends Bloc<UsersEvent, UsersState> {
-  final GetUsers getUsers;
+class LoginBloc extends Bloc<LoginEvent, LoginState> {
+  final SignInUseCase signInUseCase;
 
-  UsersBloc(this.getUsers) : super(UsersInitial()) {
-    on<FetchUsersEvent>(_onFetchUsers);
+  LoginBloc(this.signInUseCase) : super(LoginInitial()) {
+    on<SignInEvent>(onSignInEvent);
   }
 
-  Future<void> _onFetchUsers(
-    FetchUsersEvent event,
-    Emitter<UsersState> emit,
-  ) async {
-    emit(UsersLoading());
+  Future<void> onSignInEvent(
+      SignInEvent event, Emitter<LoginState> emit) async {
+    emit(LoginLoading());
     try {
-      final users = await getUsers();
-      print(users);
-      emit(UsersLoaded(users));
+      final user = await signInUseCase(
+        email: event.email,
+        password: event.password,
+      );
+      emit(LoginSuccess(user));
     } catch (e) {
-      emit(UsersError(e.toString()));
+      emit(LoginFailure(e.toString()));
     }
   }
 }

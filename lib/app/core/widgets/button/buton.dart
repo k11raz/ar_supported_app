@@ -26,12 +26,16 @@ class CustomButton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
+          border: Border.all(
+            color: NColors.white,
+            width: 1
+          ),
           gradient: LinearGradient(
             colors: [primaryColor, secondaryColor],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(4),
           boxShadow: [
             BoxShadow(
               color: primaryColor.withValues(alpha: 0.4),
@@ -54,7 +58,7 @@ class CustomButton extends StatelessWidget {
                 ),
               ),
             ] else ...[
-              Icon(icon, color: NColors.white),
+              
               const SizedBox(width: 8),
               Text(
                 text,

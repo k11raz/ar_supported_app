@@ -4,26 +4,29 @@ class UserModel {
   final String id;
   final String email;
   final String name;
+  final String surname;
   final String? phone;
   final String? address;
-  final UserRole role;
+  final UserRole? role;
   final DateTime createdAt;
 
   UserModel({
     required this.id,
     required this.email,
     required this.name,
+    required this.surname,
     this.phone,
     this.address,
-    required this.role,
+    this.role,
     required this.createdAt,
   });
 
-   factory UserModel.fromJson(Map<String, dynamic> json) {
+  factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
       id: json['id'] as String,
       email: json['email'] as String,
       name: json['name'] as String,
+      surname: json['surname'],
       phone: json['phone'] as String?,
       address: json['address'] as String?,
       role: parseUserRole(json['role']),
@@ -36,9 +39,10 @@ class UserModel {
       'id': id,
       'email': email,
       'name': name,
+      'surname': surname,
       'phone': phone,
       'address': address,
-      'role': role.name,
+      'role': role?.name,
       'created_at': createdAt.toIso8601String(),
     };
   }
@@ -48,9 +52,10 @@ class UserModel {
       id: id,
       email: email,
       name: name,
+      surname: surname,
       phone: phone,
       address: address,
-      role: role,
+      role: role!,
       createdAt: createdAt,
     );
   }
@@ -60,6 +65,7 @@ class UserModel {
       id: user.id,
       email: user.email,
       name: user.name,
+      surname: user.surname,
       phone: user.phone,
       address: user.address,
       role: user.role,
@@ -77,5 +83,3 @@ class UserModel {
     }
   }
 }
-
-
