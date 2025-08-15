@@ -9,22 +9,5 @@ import 'package:bus/app/presentation/search/bloc.dart';
 final sl = GetIt.instance;
 
 Future<void> dependencyInjection() async {
-  // DataSource
-  sl.registerLazySingleton<ProductRemoteDatasource>(
-    () => SupabaseProductRemoteDatasource(),
-  );
-
-  // Repository
-  sl.registerLazySingleton<ProductRepository>(
-    () => ProductRepositoryImpl(sl()),
-  );
-
-  // UseCase
-  sl.registerLazySingleton(
-    () => GetProducts(sl()),
-  );
-
-  sl.registerFactory(
-    () => ProductsBloc(sl()),
-  );
+  
 }

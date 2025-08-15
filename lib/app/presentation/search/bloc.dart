@@ -2,16 +2,33 @@ import 'dart:developer';
 
 import 'package:bus/app/domain/entities/product.dart';
 import 'package:bus/app/domain/usecases/products/get_product.dart';
+import 'package:bus/app/domain/usecases/products/search_product.dart';
 import 'package:bus/app/presentation/search/event.dart';
 import 'package:bus/app/presentation/search/state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
-  final GetProducts getProducts;
+  final GetProducts? getProducts;
+  final GetSearchProducts? getSearchProducts;
 
-  ProductsBloc(this.getProducts) : super(ProductsInitial()) {
+  ProductsBloc(this.getProducts, this.getSearchProducts) : super(ProductsInitial()) {
     on<FetchProductsEvent>(_onLoadProducts);
-    on<FetchProductsByCategoryEvent>(onFetchProductsByCategory);
+    on<FetchProductsByCategoryEvent>(_onFetchProductsByCategory);
+    on<SearchProductEvent>(searchProduct);
+  }
+
+  Future<void> searchProduct(
+    SearchProductEvent event,
+    Emitter<ProductsState> emit,
+  ) async {
+    emit(ProductsLoading());
+    try {
+      final products = await getSearchProducts!(query: event.query);
+      emit(ProductsLoaded(products));
+    } catch (e, s) {
+      log('FetchProductsEvent error: $e', stackTrace: s);
+      emit(ProductsError('Ürünler yüklenemedi.'));
+    }
   }
 
   Future<void> _onLoadProducts(
@@ -20,21 +37,25 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
   ) async {
     emit(ProductsLoading());
     try {
-      final List<ProductEntity> products = await getProducts();
+      final products = await getProducts!();
       emit(ProductsLoaded(products));
-      print(products);
-    } catch (e) {
+    } catch (e, s) {
+      log('FetchProductsEvent error: $e', stackTrace: s);
       emit(ProductsError('Ürünler yüklenemedi.'));
-      log(e.toString());
     }
   }
 
-  Future<void> onFetchProductsByCategory(
+  Future<void> _onFetchProductsByCategory(
     FetchProductsByCategoryEvent event,
     Emitter<ProductsState> emit,
   ) async {
     emit(ProductsLoading());
-    final result = await getProducts(categoryId: event.categoryId);
-    emit(ProductsLoaded(result));
+    try {
+      final products = await getProducts!(categoryId: event.categoryId);
+      emit(ProductsLoaded(products));
+    } catch (e, s) {
+      log('FetchProductsByCategoryEvent error: $e', stackTrace: s);
+      emit(ProductsError('Kategoriye göre ürünler yüklenemedi.'));
+    }
   }
 }

@@ -4,10 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
   ProductDetailBloc() : super(const ProductDetailState()) {
-    on<ProductDetailScrollChanged>(_onScrollChanged);
+    on<ProductDetailScrollChanged>(onScrollChanged);
   }
 
-  void _onScrollChanged(
+  void onScrollChanged(
       ProductDetailScrollChanged event, Emitter<ProductDetailState> emit) {
     final shouldHide = event.offset >= event.totalImagesHeight - 50;
 
@@ -16,3 +16,4 @@ class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
     }
   }
 }
+

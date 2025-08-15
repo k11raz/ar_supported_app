@@ -6,8 +6,9 @@ abstract class UserRemoteDatasource {
 }
 
 abstract class ProductRemoteDatasource {
-  Future<List<Map<String, dynamic>>> getProducts();
+  Future<List<Map<String, dynamic>>> getProducts({String? categoryId});
   Future<void> addProduct(Map<String, dynamic> data);
+  Future<List<Map<String, dynamic>>> searchProduct({String query});
 }
 
 abstract class CategoryRemoteDataSource {

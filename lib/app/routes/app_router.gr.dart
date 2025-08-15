@@ -107,18 +107,50 @@ class MenuRoute extends _i12.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i6.ProductCategoryView]
-class ProductCategoryRoute extends _i12.PageRouteInfo<void> {
-  const ProductCategoryRoute({List<_i12.PageRouteInfo>? children})
-    : super(ProductCategoryRoute.name, initialChildren: children);
+class ProductCategoryRoute
+    extends _i12.PageRouteInfo<ProductCategoryRouteArgs> {
+  ProductCategoryRoute({
+    _i13.Key? key,
+    required _i14.CategoryEntity category,
+    List<_i12.PageRouteInfo>? children,
+  }) : super(
+         ProductCategoryRoute.name,
+         args: ProductCategoryRouteArgs(key: key, category: category),
+         initialChildren: children,
+       );
 
   static const String name = 'ProductCategoryRoute';
 
   static _i12.PageInfo page = _i12.PageInfo(
     name,
     builder: (data) {
-      return const _i6.ProductCategoryView();
+      final args = data.argsAs<ProductCategoryRouteArgs>();
+      return _i6.ProductCategoryView(key: args.key, category: args.category);
     },
   );
+}
+
+class ProductCategoryRouteArgs {
+  const ProductCategoryRouteArgs({this.key, required this.category});
+
+  final _i13.Key? key;
+
+  final _i14.CategoryEntity category;
+
+  @override
+  String toString() {
+    return 'ProductCategoryRouteArgs{key: $key, category: $category}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! ProductCategoryRouteArgs) return false;
+    return key == other.key && category == other.category;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ category.hashCode;
 }
 
 /// generated route for

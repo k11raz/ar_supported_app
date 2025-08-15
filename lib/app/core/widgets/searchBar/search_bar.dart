@@ -7,6 +7,7 @@ class NSearchContainer extends StatelessWidget {
   final IconData? icon;
   final bool showBackground;
   final ValueChanged<String>? onChanged;
+  final TextEditingController? controller;
 
   const NSearchContainer({
     super.key,
@@ -14,11 +15,13 @@ class NSearchContainer extends StatelessWidget {
     this.icon = Iconsax.search_normal,
     this.showBackground = true,
     this.onChanged,
+    this.controller,
   });
 
   @override
   Widget build(BuildContext context) {
-    final controller = TextEditingController();
+    final textController = controller ?? TextEditingController();
+
     return Container(
       width: MediaQuery.of(context).size.width,
       height: 48,
@@ -33,7 +36,7 @@ class NSearchContainer extends StatelessWidget {
           const SizedBox(width: 12),
           Expanded(
             child: TextField(
-              controller: controller,
+              controller: textController,
               decoration: InputDecoration(
                 hintText: hintText,
                 border: InputBorder.none,
@@ -42,7 +45,7 @@ class NSearchContainer extends StatelessWidget {
                 isDense: true,
                 contentPadding: EdgeInsets.zero,
               ),
-              //onChanged: onChanged,
+              onChanged: onChanged,
               style: Theme.of(context).textTheme.bodyMedium,
             ),
           ),
@@ -51,3 +54,4 @@ class NSearchContainer extends StatelessWidget {
     );
   }
 }
+

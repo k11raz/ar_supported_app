@@ -27,10 +27,10 @@ export 'navbar/event.dart';
 export 'navbar/state.dart';
 export 'navbar/view.dart';
 
-export 'product_Detail/bloc.dart';
-export 'product_Detail/event.dart';
-export 'product_Detail/state.dart';
-export 'product_Detail/view.dart';
+export 'product_detail/bloc.dart';
+export 'product_detail/event.dart';
+export 'product_detail/state.dart';
+export 'product_detail/view.dart';
 
 // export 'profile/bloc.dart';
 // export 'profile/state.dart';

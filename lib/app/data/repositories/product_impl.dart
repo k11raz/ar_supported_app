@@ -10,9 +10,11 @@ class ProductRepositoryImpl implements ProductRepository {
   ProductRepositoryImpl(this.remoteDatasource);
 
   @override
-  Future<List<ProductEntity>> fetchProducts() async {
-    final dataList = await remoteDatasource.getProducts();
-    return dataList.map((json) => ProductModel.fromJson(json).toEntity()).toList();
+  Future<List<ProductEntity>> fetchProducts({String? categoryId}) async {
+    final dataList = await remoteDatasource.getProducts(categoryId: categoryId);
+    return dataList
+        .map((json) => ProductModel.fromJson(json).toEntity())
+        .toList();
   }
   
   @override
@@ -32,5 +34,13 @@ class ProductRepositoryImpl implements ProductRepository {
     final json = await (remoteDatasource as SupabaseProductRemoteDatasource).getProductById(id.toString());
     if (json == null) return null;
     return ProductModel.fromJson(json).toEntity();
+  }
+  
+  @override
+  Future<List<ProductEntity>> searchProduct(String query) async {
+    final dataList = await remoteDatasource.searchProduct(query: query);
+    return dataList
+        .map((json) => ProductModel.fromJson(json).toEntity())
+        .toList();
   }
 }

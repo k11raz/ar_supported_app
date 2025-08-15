@@ -1,5 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:bus/app/app.dart';
+import 'package:bus/app/domain/usecases/products/search_product.dart';
+import 'package:bus/app/presentation/search/widgets/category_card.dart';
+import 'package:bus/app/presentation/search/widgets/product_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -9,8 +12,7 @@ class SearchView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
+    final searchController = TextEditingController();
     return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
@@ -65,20 +67,7 @@ class SearchView extends StatelessWidget {
                           itemCount: state.categories.length,
                           itemBuilder: (context, index) {
                             final category = state.categories[index];
-                            return InkWell(
-                              onTap: () {
-                                context.router.push(ProductCategoryRoute());
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.only(right: 24.0),
-                                child: Text(
-                                  category.name,
-                                  style: textTheme.titleLarge?.copyWith(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            );
+                            return CategoryCard(category: category);
                           },
                         );
                       }
@@ -91,7 +80,23 @@ class SearchView extends StatelessWidget {
 
               const SizedBox(height: 48),
 
-              NSearchContainer(),
+              BlocProvider<ProductsBloc>(
+                create: (_) => ProductsBloc(
+                  GetProducts(ProductRepositoryImpl(SupabaseProductRemoteDatasource())),
+                  GetSearchProducts(ProductRepositoryImpl(SupabaseProductRemoteDatasource())),
+                )..add(FetchProductsEvent()),
+                child: BlocBuilder<ProductsBloc, ProductsState>(
+                  builder: (context, state) {
+                    return NSearchContainer(
+                      controller: searchController,
+                      onChanged: (value) {
+                        context.read<ProductsBloc>().add(SearchProductEvent(value));
+                      },
+                    );
+                  },
+                ),
+              ),
+
 
               const SizedBox(height: 48),
               const Divider(color: Colors.white24),
@@ -101,6 +106,9 @@ class SearchView extends StatelessWidget {
                 child: BlocProvider(
                   create: (_) => ProductsBloc(
                     GetProducts(
+                      ProductRepositoryImpl(SupabaseProductRemoteDatasource()),
+                    ),
+                    GetSearchProducts(
                       ProductRepositoryImpl(SupabaseProductRemoteDatasource()),
                     ),
                   )..add(FetchProductsEvent()),
@@ -145,13 +153,10 @@ class SearchView extends StatelessWidget {
                           itemCount: state.products.length,
                           itemBuilder: (context, index) {
                             final product = state.products[index];
-                            return _buildProductCard(
-                              product,
-                              textTheme,
-                              "image/images/img1.jpg",
-
-                              context,
-                              [
+                            return ProductCard(
+                              product: product,
+                              imagePath: 'image/images/img1.jpg',
+                              images: [
                                 "image/images/img1.jpg",
                                 "image/images/img2.jpg",
                                 "image/images/img2.jpg",
@@ -169,76 +174,6 @@ class SearchView extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildProductCard(
-    ProductEntity product,
-    TextTheme textTheme,
-    String imagePath,
-    BuildContext context,
-    List<String> images,
-  ) {
-    return InkWell(
-      onTap: () {
-        context.router.push(
-          ProductDetailRoute(
-            product: product,
-            images: [
-              "image/images/img1.jpg",
-              "image/images/img2.jpg",
-              "image/images/img2.jpg",
-            ],
-          ),
-        );
-      },
-      borderRadius: BorderRadius.circular(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.asset(
-                imagePath,
-                fit: BoxFit.cover,
-                width: double.infinity,
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      product.name,
-                      style: textTheme.bodyLarge?.copyWith(color: Colors.white),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      "${product.price} TL",
-                      style: textTheme.titleSmall?.copyWith(
-                        color: Colors.white70,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.favorite_border),
-                color: Colors.white,
-              ),
-            ],
-          ),
-        ],
       ),
     );
   }
