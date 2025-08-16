@@ -1,4 +1,8 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:bus/app/presentation/product_detail/widgets/bloc.dart';
+import 'package:bus/app/presentation/product_detail/widgets/event.dart';
+import 'package:bus/app/presentation/product_detail/widgets/state.dart';
+import 'package:bus/app/presentation/profile/state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../app.dart';
@@ -190,55 +194,72 @@ class ProductDetailView extends StatelessWidget {
                     ),
 
                     // bottom sheet animasyonlu göster/gizle
-                    AnimatedPositioned(
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,
-                      bottom: state.hideBottomSheet ? -150 : 0,
-                      left: 0,
-                      right: 0,
-                      child: Container(
-                        height: 144,
-                        color: Theme.of(context).cardColor,
-                        child: Padding(
-                          padding: EdgeInsets.all(24),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    product.name,
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.titleLarge,
+                   BlocListener<CardBloc, CardState>(
+                      listener: (context, state) {
+                        if (state is CardSuccess) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Ürün sepete eklendi!")),
+                          );
+                        } else if (state is CardFailure) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Hata: ${state.message}")),
+                          );
+                        }
+                      },
+                      child: AnimatedPositioned(
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                        bottom: state.hideBottomSheet ? -150 : 0,
+                        left: 0,
+                        right: 0,
+                        child: Container(
+                          height: 144,
+                          color: Theme.of(context).cardColor,
+                          child: Padding(
+                            padding: EdgeInsets.all(24),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(product.name, style: Theme.of(context).textTheme.titleLarge),
+                                SizedBox(height: 4),
+                                Text("${product.price} TL", style: Theme.of(context).textTheme.titleMedium),
+                                SizedBox(height: 4),
+                                Container(
+                                  alignment: Alignment.center,
+                                  child: CustomButton(
+                                    text: "SEPETE EKLE",
+                                    onPressed: () {
+                                      final loginState = context.read<LoginState>();
+
+                                      if (loginState is LoginSuccess) {
+                                        final userId = loginState.user.id;
+                                        final productId = product.id;
+
+                                        context.read<CardBloc>().add(
+                                          AddProductToCardEvent(
+                                            userId: userId,
+                                            productId: productId,
+                                            quantity: 1,
+                                          ),
+                                        );
+                                      } else {
+                                        // Kullanıcı giriş yapmamışsa bir uyarı göster
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(content: Text("Lütfen önce giriş yapın!")),
+                                        );
+                                      }
+                                    },
+                                    primaryColor: Colors.black,
+                                    secondaryColor: Colors.black,
                                   ),
-                                ],
-                              ),
-
-                              SizedBox(height: 4),
-
-                              Text(
-                                "${product.price} TL",
-                                style: Theme.of(context).textTheme.titleMedium,
-                              ),
-
-                              SizedBox(height: 4),
-
-                              Container(
-                                alignment: Alignment.center,
-
-                                child: CustomButton(
-                                  text: "SEPETE EKLE",
-                                  onPressed: () {},
-                                  primaryColor: Colors.black,
-                                  secondaryColor: Colors.black,
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
+                    )
+
                   ],
                 );
               },

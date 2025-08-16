@@ -155,7 +155,7 @@ class SearchView extends StatelessWidget {
                             final product = state.products[index];
                             return ProductCard(
                               product: product,
-                              imagePath: 'image/images/img1.jpg',
+                              imagePath: product.image_url,
                               images: [
                                 "image/images/img1.jpg",
                                 "image/images/img2.jpg",

@@ -29,3 +29,11 @@ abstract class AuthRemoteDataSource {
     required String password,
   });
 }
+
+abstract class CardRemoteDataSource {
+  Future<void> addProductToCard({
+    required String userId,
+    required String productId,
+    int quantity = 1
+  });
+}
