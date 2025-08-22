@@ -4,6 +4,8 @@ import 'package:bus/app/data/repositories/auth_impl.dart';
 import 'package:bus/app/domain/usecases/auth/sign_in.dart';
 import 'package:bus/app/presentation/profile/bloc.dart';
 import 'package:bus/app/presentation/profile/widgets/login_form.dart';
+import 'package:bus/app/services/cache/cache_service.dart';
+import 'package:bus/app/services/cache/user_cache.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../app.dart';
@@ -14,24 +16,30 @@ class UserView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authRemoteDataSource = SupabaseAuthRemoteDataSource(dio: DioClient.dio);
+    final authRemoteDataSource = SupabaseAuthRemoteDataSource(
+      dio: DioClient.dio,
+    );
     final authRepository = AuthRepositoryImpl(authRemoteDataSource);
     final signInUseCase = SignInUseCase(authRepository);
+
     return BlocProvider(
-      create: (_) => LoginBloc(signInUseCase),
+      create: (_) => LoginBloc(signInUseCase: signInUseCase),
       child: Scaffold(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: Center(
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 24.0),
+            padding: const EdgeInsets.symmetric(
+              vertical: 8.0,
+              horizontal: 24.0,
+            ),
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   SignInForm(),
-                  
+
                   SizedBox(height: 4),
-      
+
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [

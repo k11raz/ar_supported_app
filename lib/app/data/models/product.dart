@@ -6,10 +6,10 @@ class ProductModel {
   final String? description;
   final double price;
   final int stock;
-  final String category_id;
-  final String? ar_model_url;
-  final String image_url;
-  final DateTime? created_at;
+  final String categoryId;
+  final String? arModelUrl;
+  final String imageUrl;
+  final DateTime? createdAt;
 
   ProductModel({
     required this.id,
@@ -17,10 +17,10 @@ class ProductModel {
     this.description,
     required this.price,
     required this.stock,
-    required this.category_id,
-    this.ar_model_url,
-    required this.image_url,
-    this.created_at,
+    required this.categoryId,
+    this.arModelUrl,
+    required this.imageUrl,
+    this.createdAt,
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
@@ -30,9 +30,9 @@ class ProductModel {
       description: json["description"] as String?,
       price: double.parse(json["price"].toString()),
       stock: int.parse(json["stock"].toString()),
-      category_id: json["category_id"],
-      image_url: json["image_url"],
-      created_at: json["created_at"] != null
+      categoryId: json["category_id"],
+      imageUrl: json["image_url"],
+      createdAt: json["created_at"] != null
         ? DateTime.tryParse(json["created_at"])
         : null,
     );
@@ -44,9 +44,9 @@ class ProductModel {
     "description": description,
     "price": price,
     "stock": stock,
-    "category_id": category_id,
-    "image_url": image_url,
-    "created_at": created_at,
+    "category_id": categoryId,
+    "image_url": imageUrl,
+    "created_at": createdAt,
   };
 
   ProductEntity toEntity() {
@@ -54,11 +54,11 @@ class ProductModel {
       id: id,
       name: name,
       description: description,
-      created_at: created_at, 
+      createdAt: createdAt, 
       price: price, 
       stock: stock, 
-      category_id: category_id, 
-      image_url: image_url,
+      categoryId: categoryId, 
+      imageUrl: imageUrl,
     );
   }
 
@@ -69,9 +69,9 @@ class ProductModel {
       description: product.description,
       price: product.price, stock: 
       product.stock, 
-      category_id: product.category_id, 
-      image_url: product.image_url,
-      created_at: product.created_at
+      categoryId: product.categoryId, 
+      imageUrl: product.imageUrl,
+      createdAt: product.createdAt
     );
   }
 }

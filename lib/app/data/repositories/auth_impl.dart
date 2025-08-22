@@ -1,3 +1,7 @@
+import 'dart:developer';
+
+import 'package:bus/app/services/cache/user_cache.dart';
+
 import '../../app.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
@@ -24,9 +28,12 @@ class AuthRepositoryImpl implements AuthRepository {
     // Burada model'i entity'ye çeviriyoruz
     return model.toEntity();
   }
-  
+
   @override
-  Future<UserEntity> signIn({required String email, required String password}) async {
+  Future<UserEntity> signIn({
+    required String email,
+    required String password,
+  }) async {
     final model = await remoteDataSource.signIn(
       email: email,
       password: password,

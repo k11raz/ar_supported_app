@@ -1,15 +1,15 @@
 class OrderItemsEntity {
   final String id;
-  final String order_id;
-  final String product_id;
+  final String orderId;
+  final String productId;
   final int quantity;
-  final int price_at_time;
+  final int priceAtTime;
 
-  OrderItemsEntity({
+  OrderItemsEntity(  {
     required this.id,
-    required this.order_id,
-    required this.product_id,
+    required this.orderId,
+    required this.productId,
+    required this.priceAtTime, 
     required this.quantity,
-    required this.price_at_time,
   });
 }

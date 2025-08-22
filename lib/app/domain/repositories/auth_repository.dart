@@ -8,9 +8,7 @@ abstract class AuthRepository {
     required String surname,
     String? phone,
   });
+  Future<UserEntity> signIn({required String email, required String password});
 
-  Future<UserEntity> signIn({
-    required String email,
-    required String password,
-  });
+  //Future<UserEntity> signIn(SignInParams params);
 }

@@ -2,25 +2,65 @@ import 'package:bus/app/domain/entities/order_items.dart';
 
 class OrderItemModel extends OrderItemsEntity {
   OrderItemModel({
-  required super.id, 
-  required super.order_id, 
-  required super.product_id, 
-  required super.quantity, 
-  required super.price_at_time});
+    required super.id,
+    required super.orderId,
+    required super.quantity,
+    required super.productId,
+    required super.priceAtTime,
+  });
 
   factory OrderItemModel.fromMap(Map<String, dynamic> map) => OrderItemModel(
     id: map['id'],
-    order_id: map['order_id'],
-    product_id: map['product_id'],
+    orderId: map['order_id'],
+    productId: map['product_id'],
     quantity: map['quantity'],
-    price_at_time: int.parse(map['price_at_time'].toString()),
+    priceAtTime: int.parse(map['price_at_time'].toString()),
   );
 
   Map<String, dynamic> toMap() => {
     'id': id,
-    'order_id': order_id,
-    'product_id': product_id,
+    'order_id': orderId,
+    'product_id': productId,
     'quantity': quantity,
-    'price_at_time': price_at_time,
+    'price_at_time': priceAtTime,
   };
+
+  factory OrderItemModel.fromJson(Map<String, dynamic> json) {
+    return OrderItemModel(
+      id: json["id"] as String,
+      orderId: json["order_id"] as String,
+      productId: json["product_id"],
+      quantity: int.parse(json["quantity"].toString()),
+      priceAtTime: int.parse(json["price_at_time"].toString()),
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    "orderId": orderId,
+    "quantity": quantity,
+    "productId": productId,
+    "priceAtTime": priceAtTime,
+  };
+
+  OrderItemsEntity toEntity() {
+    return OrderItemsEntity(
+      id: id, 
+      orderId: orderId, 
+      productId: productId, 
+      priceAtTime: priceAtTime, 
+      quantity: quantity,
+      
+    );
+  }
+
+  static OrderItemModel fromEntity(OrderItemsEntity order) {
+    return OrderItemModel(
+      id: order.id, 
+      orderId: order.orderId, 
+      quantity: order.quantity, 
+      productId: order.productId, 
+      priceAtTime: order.priceAtTime,
+    );
+  }
 }

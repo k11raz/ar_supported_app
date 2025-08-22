@@ -1,16 +1,37 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:bus/app/data/datasources/remote/favorite.dart';
+import 'package:bus/app/data/repositories/favorite_impl.dart';
+import 'package:bus/app/domain/usecases/favorites/add_to_favorites.dart';
+import 'package:bus/app/domain/usecases/favorites/get_favorites.dart';
+import 'package:bus/app/presentation/favorites/bloc.dart';
+import 'package:bus/app/presentation/favorites/event.dart';
+import 'package:bus/app/presentation/favorites/state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../app.dart';
 
 class ProductCard extends StatelessWidget {
-  const ProductCard( {super.key, required this.product,required this.imagePath, required this.images});
+  const ProductCard({
+    super.key,
+    required this.product,
+    required this.imagePath,
+    required this.images,
+  });
   final ProductEntity product;
   final List<String> images;
   final String imagePath;
 
   @override
   Widget build(BuildContext context) {
+    final favoritesRemoteDataSource = SupabaseFavoritesRemoteDataSource();
+    final favoritesRepositoryImpl = FavoriteRepositoryImpl(
+      favoritesRemoteDataSource,
+    );
+    final addToFavoritesUseCase = AddToFavoritesUseCase(
+      favoritesRepositoryImpl,
+    );
+    final getFavorites = GetFavorites(favoritesRepositoryImpl);
     return InkWell(
       onTap: () {
         context.router.push(
@@ -60,10 +81,22 @@ class ProductCard extends StatelessWidget {
                   ],
                 ),
               ),
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.favorite_border),
-                color: Colors.white,
+              BlocProvider(
+                create: (context) =>
+                    FavoritesBloc(addToFavoritesUseCase, getFavorites),
+                child: BlocBuilder<FavoritesBloc, FavoritesState>(
+                  builder: (context, state) {
+                    return IconButton(
+                      onPressed: () {
+                        context.read<FavoritesBloc>().add(
+                          AddProductToFavoritesEvent(product: product),
+                        );
+                      },
+                      icon: const Icon(Icons.favorite_border),
+                      color: Colors.white,
+                    );
+                  },
+                ),
               ),
             ],
           ),

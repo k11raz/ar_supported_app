@@ -1,18 +1,17 @@
+import 'package:bus/app/domain/domain.dart';
 import 'package:bus/app/domain/repositories/order_repository.dart';
 
-class AddToCardUseCase {
+class AddToCartUseCase {
   final CardRepository repository;
 
-  AddToCardUseCase(this.repository);
+  AddToCartUseCase(this.repository);
 
   Future<void> call({
-    required String userId,
-    required String productId,
+    required ProductEntity product,
     int quantity = 1,
   }) async {
     return repository.addProductToCard(
-      userId: userId,
-      productId: productId,
+      product: product,
       quantity: quantity,
     );
   }

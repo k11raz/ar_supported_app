@@ -4,10 +4,10 @@ class ProductEntity {
   final String? description;
   final double price;
   final int stock;
-  final String category_id;
-  final String? ar_model_url;
-  final String image_url;
-  final DateTime? created_at;
+  final String categoryId;
+  final String? arModelUrl;
+  final String imageUrl;
+  final DateTime? createdAt;
 
   ProductEntity({
     required this.id,
@@ -15,9 +15,9 @@ class ProductEntity {
     this.description,
     required this.price,
     required this.stock,
-    required this.category_id,
-    this.ar_model_url,
-    required this.image_url,
-    this.created_at,
+    required this.categoryId,
+    this.arModelUrl,
+    required this.imageUrl,
+    this.createdAt,
   });
 }

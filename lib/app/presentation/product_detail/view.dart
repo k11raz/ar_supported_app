@@ -1,8 +1,10 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:bus/app/data/datasources/remote/card.dart';
+import 'package:bus/app/data/repositories/card_impl.dart';
+import 'package:bus/app/domain/usecases/add_to_card.dart';
+import 'package:bus/app/domain/usecases/basket/get_order_items.dart';
 import 'package:bus/app/presentation/product_detail/widgets/bloc.dart';
 import 'package:bus/app/presentation/product_detail/widgets/event.dart';
-import 'package:bus/app/presentation/product_detail/widgets/state.dart';
-import 'package:bus/app/presentation/profile/state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../app.dart';
@@ -21,9 +23,17 @@ class ProductDetailView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double totalImagesHeight = images.length * 200;
+    final cardRemoteDataSource = SupabaseCardRemoteDatasource();
+    final cardRepository = CardRepositoryImpl(cardRemoteDataSource);
+    final addToCartUseCase = AddToCartUseCase(cardRepository);
+    final fetchOrders = GetOrderItems(cardRepository);
 
-    return BlocProvider<ProductDetailBloc>(
-      create: (_) => ProductDetailBloc(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<ProductDetailBloc>(create: (_) => ProductDetailBloc()),
+        BlocProvider<CardBloc>(create: (_) => CardBloc(addToCartUseCase, fetchOrders)),
+      ],
+
       child: Builder(
         builder: (context) {
           return Scaffold(
@@ -95,7 +105,9 @@ class ProductDetailView extends StatelessWidget {
 
                                 Container(
                                   decoration: BoxDecoration(
-                                    color: Theme.of(context).colorScheme.surface,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.surface,
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Padding(
@@ -104,7 +116,9 @@ class ProductDetailView extends StatelessWidget {
                                       onPressed: () {},
                                       child: Text(
                                         "3 BOYUTLU OLARAK GÖRÜNTÜLE",
-                                        style: Theme.of(context).textTheme.titleLarge
+                                        style: Theme.of(
+                                          context,
+                                        ).textTheme.titleLarge,
                                       ),
                                     ),
                                   ),
@@ -178,7 +192,9 @@ class ProductDetailView extends StatelessWidget {
                                     ),
                                   ),
                                   children: <Widget>[
-                                    ListTile(title: Text("${product.stock} ADET")),
+                                    ListTile(
+                                      title: Text("${product.stock} ADET"),
+                                    ),
                                   ],
                                 ),
                                 const SizedBox(height: 24),
@@ -186,80 +202,56 @@ class ProductDetailView extends StatelessWidget {
                                 const SizedBox(height: 16),
                               ]),
                             ),
-
-                            
                           ),
                         ],
                       ),
                     ),
 
-                    // bottom sheet animasyonlu göster/gizle
-                   BlocListener<CardBloc, CardState>(
-                      listener: (context, state) {
-                        if (state is CardSuccess) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("Ürün sepete eklendi!")),
-                          );
-                        } else if (state is CardFailure) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("Hata: ${state.message}")),
-                          );
-                        }
-                      },
-                      child: AnimatedPositioned(
-                        duration: const Duration(milliseconds: 300),
-                        curve: Curves.easeInOut,
-                        bottom: state.hideBottomSheet ? -150 : 0,
-                        left: 0,
-                        right: 0,
-                        child: Container(
-                          height: 144,
-                          color: Theme.of(context).cardColor,
-                          child: Padding(
-                            padding: EdgeInsets.all(24),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(product.name, style: Theme.of(context).textTheme.titleLarge),
-                                SizedBox(height: 4),
-                                Text("${product.price} TL", style: Theme.of(context).textTheme.titleMedium),
-                                SizedBox(height: 4),
-                                Container(
-                                  alignment: Alignment.center,
-                                  child: CustomButton(
-                                    text: "SEPETE EKLE",
-                                    onPressed: () {
-                                      final loginState = context.read<LoginState>();
-
-                                      if (loginState is LoginSuccess) {
-                                        final userId = loginState.user.id;
-                                        final productId = product.id;
-
-                                        context.read<CardBloc>().add(
-                                          AddProductToCardEvent(
-                                            userId: userId,
-                                            productId: productId,
-                                            quantity: 1,
-                                          ),
-                                        );
-                                      } else {
-                                        // Kullanıcı giriş yapmamışsa bir uyarı göster
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          const SnackBar(content: Text("Lütfen önce giriş yapın!")),
-                                        );
-                                      }
-                                    },
-                                    primaryColor: Colors.black,
-                                    secondaryColor: Colors.black,
-                                  ),
+                    AnimatedPositioned(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                      bottom: state.hideBottomSheet ? -150 : 0,
+                      left: 0,
+                      right: 0,
+                      child: Container(
+                        height: 144,
+                        color: Theme.of(context).cardColor,
+                        child: Padding(
+                          padding: EdgeInsets.all(24),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                product.name,
+                                style: Theme.of(context).textTheme.titleLarge,
+                              ),
+                              SizedBox(height: 4),
+                              Text(
+                                "${product.price} TL",
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
+                              SizedBox(height: 4),
+                              Container(
+                                alignment: Alignment.center,
+                                child: CustomButton(
+                                  text: "SEPETE EKLE",
+                                  onPressed: () {
+                                    context.read<CardBloc>().add(
+                                      AddProductToCardEvent(
+                                        product: product,
+                                        quantity: 1,
+                                      ),
+                                    );
+                                  },
+                                  primaryColor: Colors.black,
+                                  secondaryColor: Colors.black,
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                    )
-
+                    ),
                   ],
                 );
               },

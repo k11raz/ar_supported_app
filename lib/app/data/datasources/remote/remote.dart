@@ -1,3 +1,6 @@
+import 'package:bus/app/domain/entities/favorites.dart';
+import 'package:bus/app/domain/entities/order_items.dart';
+
 import '../../../app.dart';
 
 abstract class UserRemoteDatasource {
@@ -32,8 +35,18 @@ abstract class AuthRemoteDataSource {
 
 abstract class CardRemoteDataSource {
   Future<void> addProductToCard({
-    required String userId,
-    required String productId,
+    required ProductEntity product,
     int quantity = 1
+  });
+
+  Future<List<Map<String, dynamic>>> fetchBasketItems({String? orderId});
+}
+
+abstract class FavoritesRemoteDataSource {
+  Future<List<Map<String,dynamic>>> fetchFavorites({String? id});
+  Future<void> deleteFavoriteById(int id);
+  Future<void> deleteFavorites();
+   Future<void> addProductToFavorites({
+    required ProductEntity product,
   });
 }

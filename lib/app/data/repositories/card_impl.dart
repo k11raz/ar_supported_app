@@ -1,22 +1,22 @@
-
-
-import 'package:bus/app/data/datasources/remote/remote.dart';
+import 'package:bus/app/app.dart';
+import 'package:bus/app/data/models/basket_item_models.dart';
+import 'package:bus/app/data/models/order_item.dart';
+import 'package:bus/app/domain/entities/basket_item.dart';
+import 'package:bus/app/domain/entities/order_items.dart';
 import 'package:bus/app/domain/repositories/order_repository.dart';
 
 class CardRepositoryImpl implements CardRepository {
   final CardRemoteDataSource remote;
 
-  CardRepositoryImpl({required this.remote});
+  CardRepositoryImpl(this.remote);
 
   @override
   Future<void> addProductToCard({
-    required String userId,
-    required String productId,
+    required ProductEntity product,
     int quantity = 1,
-  }) {
+  }) async {
     return remote.addProductToCard(
-      userId: userId,
-      productId: productId,
+      product: product,
       quantity: quantity,
     );
   }
@@ -24,5 +24,13 @@ class CardRepositoryImpl implements CardRepository {
   @override
   void deleteProductItem(String id) {
     // TODO: implement deleteProductItem
+  }
+
+  @override
+  Future<List<BasketItemEntity>> fetchBasketItems({String? orderId}) async {
+    final dataList = await remote.fetchBasketItems(orderId: orderId);
+    return dataList
+        .map((json) => BasketItemModel.fromJson(json).toEntity())
+        .toList();
   }
 }

@@ -102,7 +102,7 @@ class ProductCategoryView extends StatelessWidget {
                         final product = state.products[index];
                         return ProductCard(
                           product: product,
-                          imagePath: product.image_url,
+                          imagePath: product.imageUrl,
                           images: const [
                             "image/images/img1.jpg",
                             "image/images/img2.jpg",

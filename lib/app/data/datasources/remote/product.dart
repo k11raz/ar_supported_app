@@ -1,6 +1,6 @@
 import 'dart:developer';
 import 'package:bus/app/data/datasources/remote/remote.dart';
-import 'package:bus/app/network/dio_client.dart';
+import 'package:bus/app/services/network/dio_client.dart';
 
 class SupabaseProductRemoteDatasource implements ProductRemoteDatasource {
   final dio = DioClient.dio;

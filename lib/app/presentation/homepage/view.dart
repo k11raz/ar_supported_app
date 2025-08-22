@@ -1,7 +1,10 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:bus/app/core/constants/colors.dart';
 import 'package:bus/app/core/constants/sizes.dart';
+import 'package:bus/app/presentation/presentation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:video_player/video_player.dart';
 
 @RoutePage()
 class HomeView extends StatelessWidget {
@@ -20,7 +23,7 @@ class HomeView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   SizedBox(
-                    height: 70,
+                    height: 80,
                     width: double.infinity,
                     child: Image.asset(
                       'image/logos/logo3.png',
@@ -30,7 +33,87 @@ class HomeView extends StatelessWidget {
                     ),
                   ),
 
-                  SizedBox(height: 196,),
+                  //SizedBox(height: 196),
+                  // BlocProvider(
+                  //   create: (context) => HomeViewBloc()
+                  //     ..add(
+                  //       InitializeVideoEvent(
+                  //         "image/images/gp.mp4",
+                  //       ),
+                  //     ),
+                  //   child: BlocBuilder<HomeViewBloc, HomeViewState>(
+                  //     builder: (context, state) {
+                  //       if (state is HomeViewLoading) {
+                  //         return const Center(
+                  //           child: CircularProgressIndicator(),
+                  //         );
+                  //       }
+
+                  //       if (state is HomeViewFailure) {
+                  //         return Center(
+                  //           child: Text(
+                  //             "Hata: ${state.message}",
+                  //             style: const TextStyle(color: Colors.red),
+                  //           ),
+                  //         );
+                  //       }
+
+                  //       if (state is HomeViewLoaded) {
+                  //         if (state.videoPlayerController == null) {
+                  //           return const Center(
+                  //             child: Text(
+                  //               "Henüz video yüklenemedi",
+                  //               style: TextStyle(
+                  //                 fontSize: 16,
+                  //                 fontWeight: FontWeight.w500,
+                  //                 color: Colors.white,
+                  //               ),
+                  //             ),
+                  //           );
+                  //         }
+
+                  //         return Column(
+                  //           crossAxisAlignment: CrossAxisAlignment.end,
+                  //           children: [
+                  //             Container(
+                  //               height: 250,
+                  //               width: double.infinity,
+                  //               decoration: BoxDecoration(
+                  //                 borderRadius: BorderRadius.circular(12),
+                  //                 boxShadow: [
+                  //                   BoxShadow(
+                  //                     color: Colors.grey.withValues(alpha: 0.3),
+                  //                     spreadRadius: 1,
+                  //                     blurRadius: 7,
+                  //                     offset: const Offset(0, 3),
+                  //                   ),
+                  //                 ],
+                  //               ),
+                  //               child: ClipRRect(
+                  //                 borderRadius: BorderRadius.circular(12),
+                  //                 child: Center(
+                  //                   child: AspectRatio(
+                  //                     aspectRatio: state
+                  //                         .videoPlayerController!
+                  //                         .value
+                  //                         .aspectRatio,
+                  //                     child: VideoPlayer(
+                  //                       state.videoPlayerController!,
+                  //                     ),
+                  //                   ),
+                  //                 ),
+                  //               ),
+                  //             ),
+                  //           ],
+                  //         );
+                  //       }
+
+                  //       return const SizedBox.shrink();
+                  //     },
+                  //   ),
+                  // ),
+
+                  SizedBox(height: 196),
                   _CollectionCard(
                     imageUrl: 'image/images/img1.jpg',
                     title: "YENİ",

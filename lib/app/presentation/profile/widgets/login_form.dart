@@ -64,6 +64,7 @@ class SignInForm extends StatelessWidget {
                 onPressed: () {},
                 icon: Icon(Iconsax.eye_slash),
               ),
+              isObsecureText: true,
               validator: (value) => value != null && value.length >= 6
                   ? null
                   : 'Şifre en az 6 karakter olmalı.',

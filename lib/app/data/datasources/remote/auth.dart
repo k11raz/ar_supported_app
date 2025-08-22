@@ -5,9 +5,7 @@ import '../../../app.dart';
 class SupabaseAuthRemoteDataSource implements AuthRemoteDataSource {
   final Dio dio;
 
-  SupabaseAuthRemoteDataSource({
-    required this.dio,
-  });
+  SupabaseAuthRemoteDataSource({required this.dio});
 
   @override
   Future<UserModel> signUp({
@@ -24,8 +22,7 @@ class SupabaseAuthRemoteDataSource implements AuthRemoteDataSource {
         options: Options(
           headers: {
             'apikey': dio.options.headers['apikey'],
-            'Authorization':
-                'Bearer ${DioClient.dio.options.headers['apikey']}',
+            'Authorization': 'Bearer ${dio.options.headers['apikey']}',
             'Content-Type': 'application/json',
           },
         ),
@@ -41,6 +38,7 @@ class SupabaseAuthRemoteDataSource implements AuthRemoteDataSource {
 
       final userId = authResponse.data['user']['id'];
       final accessToken = authResponse.data['access_token'];
+      log('access tokeeennn: $accessToken');
 
       DioClient.setAuthToken(accessToken);
 
@@ -88,16 +86,10 @@ class SupabaseAuthRemoteDataSource implements AuthRemoteDataSource {
     required String email,
     required String password,
   }) async {
-    
-
     try {
-      // 1) Auth ile giriş yap
       final authResponse = await dio.post(
         'https://rhhrrmqaptiacdkipsvx.supabase.co/auth/v1/token?grant_type=password',
-        data: {
-          'email': email,
-          'password': password,
-        },
+        data: {'email': email, 'password': password},
         options: Options(
           headers: {
             'apikey': dio.options.headers['apikey'],
@@ -113,16 +105,11 @@ class SupabaseAuthRemoteDataSource implements AuthRemoteDataSource {
       final accessToken = authResponse.data['access_token'];
       final userId = authResponse.data['user']['id'];
 
-      // 2) Access token'ı Dio client'a set et
       DioClient.setAuthToken(accessToken);
 
-      // 3) Kullanıcı profilini çek
       final profileResponse = await dio.get(
         'https://rhhrrmqaptiacdkipsvx.supabase.co/rest/v1/users',
-        queryParameters: {
-          'id': 'eq.$userId',
-          'select': '*',
-        },
+        queryParameters: {'id': 'eq.$userId', 'select': '*'},
         options: Options(
           headers: {
             'apikey': dio.options.headers['apikey'],
@@ -144,5 +131,4 @@ class SupabaseAuthRemoteDataSource implements AuthRemoteDataSource {
       throw Exception("Giriş hatası: $e");
     }
   }
-
 }

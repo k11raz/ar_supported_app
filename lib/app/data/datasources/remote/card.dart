@@ -1,90 +1,121 @@
-import 'package:bus/app/data/datasources/remote/remote.dart';
-import 'package:bus/app/network/dio_client.dart';
+import 'dart:developer';
+import 'package:bus/app/app.dart';
+import 'package:bus/app/domain/entities/order_items.dart';
+import 'package:bus/app/services/cache/cache_service.dart';
+import 'package:bus/app/services/cache/user_cache.dart';
+import 'package:dio/dio.dart';
+import 'package:uuid/uuid.dart';
 
 class SupabaseCardRemoteDatasource implements CardRemoteDataSource {
   final dio = DioClient.dio;
+  final userCacheService = UserCacheService(CacheService());
 
   @override
   Future<void> addProductToCard({
-    required String userId,
-    required String productId,
+    required ProductEntity product,
     int quantity = 1,
   }) async {
+    // Auth yoksa guest UUID oluştur
+    final userId = Uuid().v4();
 
     try {
-       final orderRes = await dio.get(
-        "orders",
-        queryParameters: {
-          'user_id': 'eq.$userId',
-          'status': 'eq.pending',
-          'select': '*',
-          'limit': 1,
-        },
+      // Pending order var mı?
+      final orderRes = await dio.get(
+        'orders',
+        queryParameters: {'status': 'eq.pending', 'select': '*', 'limit': 1},
       );
 
       String orderId;
 
-      if (orderRes.data.isEmpty) {
-        // 2️⃣ Yoksa yeni order oluştur
+      if (orderRes.data == null ||
+          (orderRes.data is List && orderRes.data.isEmpty)) {
         final newOrder = await dio.post(
           'orders',
-          data: {
-            'user_id': userId,
-            'total_amount': 0,
-            'status': 'pending',
-          },
+          data: {'total_amount': 0, 'status': 'pending'},
         );
+
+        if (newOrder.data == null || newOrder.data.isEmpty) {
+          throw Exception("Yeni sipariş oluşturulamadı");
+        }
+
         orderId = newOrder.data[0]['id'];
       } else {
         orderId = orderRes.data[0]['id'];
       }
 
-    // 3️⃣ Sepette item var mı
+      // Sepette item var mı?
       final itemRes = await dio.get(
         'order_items',
         queryParameters: {
           'order_id': 'eq.$orderId',
-          'product_id': 'eq.$productId',
+          'product_id': 'eq.${product.id}',
           'select': '*',
           'limit': 1,
         },
       );
 
-      if (itemRes.data.isEmpty) {
-        // fiyatı çek
+      if (itemRes.data == null ||
+          (itemRes.data is List && itemRes.data.isEmpty)) {
         final productRes = await dio.get(
           'products',
-          queryParameters: {'id': 'eq.$productId', 'select': 'price', 'limit': 1},
+          queryParameters: {
+            'id': 'eq.${product.id}',
+            'select': 'price',
+            'limit': 1,
+          },
         );
+
+        if (productRes.data == null || productRes.data.isEmpty) {
+          throw Exception("Ürün bulunamadı");
+        }
 
         await dio.post(
           'order_items',
           data: {
             'order_id': orderId,
-            'product_id': productId,
+            'product_id': product.id,
             'quantity': quantity,
             'price_at_time': productRes.data[0]['price'],
           },
+          options: Options(headers: {'Prefer': 'resolution=merge-duplicates'}),
         );
       } else {
-        // quantity artır
+        // Quantity artır
+        final newQuantity = (itemRes.data[0]['quantity'] ?? 0) + quantity;
         await dio.patch(
           'order_items',
-          data: {
-            'quantity': itemRes.data[0]['quantity'] + quantity,
-          },
+          data: {'quantity': newQuantity},
           queryParameters: {'id': 'eq.${itemRes.data[0]['id']}'},
+          options: Options(headers: {'Prefer': 'resolution=merge-duplicates'}),
         );
       }
 
-        // 4️⃣ RPC çağırarak total güncelle
-      await dio.post(
-        'rpc/calculate_order_total',
-        data: {'order_id': orderId},
-      );
+      // Order total güncelle
+      await dio.post('rpc/calculate_order_total', data: {'order_id': orderId});
+
+      log('Ürün sepete eklendi: ${product.id}');
     } catch (e) {
+      if (e is DioException) {
+        log('DioException: ${e.message}');
+        log('Request URL: ${e.requestOptions.uri}');
+        log('Request data: ${e.requestOptions.data}');
+        log('Query params: ${e.requestOptions.queryParameters}');
+        log('Status code: ${e.response?.statusCode}');
+        log('Response data: ${e.response?.data}');
+      }
       throw Exception('Sepete ekleme başarısız: $e');
     }
-   
   }
+
+  @override
+Future<List<Map<String, dynamic>>> fetchBasketItems({String? orderId}) async {
+  final Map<String, dynamic> params = orderId != null ? {'order_id': 'eq.$orderId'} : {};
+  
+  final response = await dio.get(
+    'basket_info',
+    queryParameters: params,
+  );
+
+  return List<Map<String, dynamic>>.from(response.data);
+}
 }

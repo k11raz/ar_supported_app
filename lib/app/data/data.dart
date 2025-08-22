@@ -5,7 +5,7 @@ export 'datasources/remote/user_remote.dart';
 export 'models/category.dart';
 export 'models/product.dart';
 export 'models/user_model.dart';
-export '../network/dio_client.dart';
+export '../services/network/dio_client.dart';
 export 'repositories/category_impl.dart';
 export 'repositories/product_impl.dart';
 export 'repositories/user_impl.dart';

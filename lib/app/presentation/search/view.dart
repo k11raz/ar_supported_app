@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:bus/app/app.dart';
+import 'package:bus/app/core/widgets/searchBar/search_anchor.dart';
 import 'package:bus/app/domain/usecases/products/search_product.dart';
 import 'package:bus/app/presentation/search/widgets/category_card.dart';
 import 'package:bus/app/presentation/search/widgets/product_card.dart';
@@ -82,21 +83,26 @@ class SearchView extends StatelessWidget {
 
               BlocProvider<ProductsBloc>(
                 create: (_) => ProductsBloc(
-                  GetProducts(ProductRepositoryImpl(SupabaseProductRemoteDatasource())),
-                  GetSearchProducts(ProductRepositoryImpl(SupabaseProductRemoteDatasource())),
+                  GetProducts(
+                    ProductRepositoryImpl(SupabaseProductRemoteDatasource()),
+                  ),
+                  GetSearchProducts(
+                    ProductRepositoryImpl(SupabaseProductRemoteDatasource()),
+                  ),
                 )..add(FetchProductsEvent()),
                 child: BlocBuilder<ProductsBloc, ProductsState>(
                   builder: (context, state) {
                     return NSearchContainer(
                       controller: searchController,
                       onChanged: (value) {
-                        context.read<ProductsBloc>().add(SearchProductEvent(value));
+                        context.read<ProductsBloc>().add(
+                          SearchProductEvent(value),
+                        );
                       },
                     );
                   },
                 ),
               ),
-
 
               const SizedBox(height: 48),
               const Divider(color: Colors.white24),
@@ -153,9 +159,10 @@ class SearchView extends StatelessWidget {
                           itemCount: state.products.length,
                           itemBuilder: (context, index) {
                             final product = state.products[index];
+
                             return ProductCard(
                               product: product,
-                              imagePath: product.image_url,
+                              imagePath: product.imageUrl,
                               images: [
                                 "image/images/img1.jpg",
                                 "image/images/img2.jpg",
