@@ -36,4 +36,10 @@ class AuthRepositoryImpl implements AuthRepository {
 
     return model.toEntity();
   }
+  
+  @override
+  Future<UserEntity> currentUser() async {
+    final UserModel user = await remoteDataSource.currentUser();
+    return user.toEntity();
+  }
 }

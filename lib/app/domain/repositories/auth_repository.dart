@@ -10,5 +10,5 @@ abstract class AuthRepository {
   });
   Future<UserEntity> signIn({required String email, required String password});
 
-  //Future<UserEntity> signIn(SignInParams params);
+  Future<UserEntity> currentUser();
 }

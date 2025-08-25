@@ -8,7 +8,7 @@ class SupabaseUserRemoteDatasource implements UserRemoteDatasource {
   @override
   Future<List<Map<String, dynamic>>> getUsers() async {
     final response = await dio.get('users');
-    log(response.data);
+    //log(response.data);
     return List<Map<String, dynamic>>.from(response.data);
   }
 

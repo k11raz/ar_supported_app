@@ -18,64 +18,30 @@ class SupabaseAuthRemoteDataSource implements AuthRemoteDataSource {
   }) async {
     try {
       final authResponse = await dio.post(
-        'https://rhhrrmqaptiacdkipsvx.supabase.co/auth/v1/signup',
+        ApiConfig.baseUrlAuth + ApiConfig.signUp,
         data: {'email': email, 'password': password},
-        options: Options(
-          headers: {
-            'apikey': dio.options.headers['apikey'],
-            'Authorization': 'Bearer ${dio.options.headers['apikey']}',
-            'Content-Type': 'application/json',
-          },
-        ),
       );
-
-      //log(dio.options.headers['apikey']);
-
-      //log('Auth response: ${authResponse.data}');
-
-      // if (authResponse.statusCode != 200 && authResponse.statusCode != 201) {
-      //   throw Exception('Auth signup failed: ${authResponse.data}');
-      // }
 
       final userId = authResponse.data['user']['id'];
       final accessToken = authResponse.data['access_token'];
-      log('access tokeeennn: $accessToken');
+      //log('access tokeeennn: $accessToken');
 
       DioClient.setAuthToken(accessToken);
 
-      final users = {
+      final userInfo = {
         'id': userId,
         'email': email,
         'name': name,
         'surname': surname,
+        'phone': (phone != null && phone.isNotEmpty) ? phone : null,
         'created_at': DateTime.now().toIso8601String(),
       };
-      if (phone != null && phone.isNotEmpty) {
-        users['phone'] = phone;
-      }
 
-      final profileResponse = await dio.post(
-        '${ApiConfig.baseUrl}${ApiConfig.users}',
-        data: users,
-        options: Options(
-          headers: {
-            'apikey': dio.options.headers['apikey'],
-            'Authorization': 'Bearer $accessToken',
-            'Content-Type': 'application/json',
-            'Prefer': 'return=representation',
-          },
-        ),
-      );
+      final profileResponse = await dio.post(ApiConfig.users, data: userInfo);
 
-      //log('Profile insert response: ${profileResponse.data}');
-
-      return UserModel.fromJson(profileResponse.data[0]);
-    } on DioException catch (e) {
-      // log('DioException status: ${e.response?.statusCode}');
-      // log('DioException data: ${e.response?.data}');
-      throw Exception("oç supabase failed: $e");
+      return UserModel.fromJson(profileResponse.data);
     } catch (e) {
-      //log('Signup error: $e');
+      log("$e");
       throw Exception("oe supabse failed: $e");
     }
   }
@@ -89,13 +55,9 @@ class SupabaseAuthRemoteDataSource implements AuthRemoteDataSource {
   }) async {
     try {
       final authResponse = await dio.post(
-        ApiConfig.baseUrlAuth,
+        ApiConfig.baseUrlAuth + ApiConfig.login,
         data: {'email': email, 'password': password},
       );
-
-      if (authResponse.statusCode != 200) {
-        throw Exception("Giriş başarısız: ${authResponse.data}");
-      }
 
       final accessToken = authResponse.data['access_token'];
       final userId = authResponse.data['user']['id'];
@@ -103,21 +65,40 @@ class SupabaseAuthRemoteDataSource implements AuthRemoteDataSource {
       DioClient.setAuthToken(accessToken);
 
       final profileResponse = await dio.get(
-        ApiConfig.baseUrl + ApiConfig.users,
+        ApiConfig.users,
         queryParameters: {'id': 'eq.$userId', 'select': '*'},
       );
 
-      if (profileResponse.statusCode != 200 ||
-          profileResponse.data == null ||
-          (profileResponse.data is List && profileResponse.data.isEmpty)) {
-        throw Exception("Kullanıcı profili bulunamadı.");
-      }
-
       return UserModel.fromJson(profileResponse.data[0]);
-    } on DioException catch (e) {
-      throw Exception("Dio hatası: ${e.response?.data ?? e.message}");
     } catch (e) {
       throw Exception("Giriş hatası: $e");
+    }
+  }
+
+  @override
+  Future<UserModel> currentUser() async {
+    try {
+      final authResponse = await dio.get("${ApiConfig.baseUrlAuth}/user");
+      log(authResponse.data);
+
+      final userId = authResponse.data['id'];
+      final email = authResponse.data['email'];
+
+      final profileResponse = await dio.get(
+        ApiConfig.users,
+        queryParameters: {'id': 'eq.$userId', 'select': '*'},
+      );
+
+      if (profileResponse.data == null || profileResponse.data.isEmpty) {
+        throw Exception("Kullanıcı bulunamadı");
+      }
+
+      final profileJson = profileResponse.data[0];
+
+      return UserModel.fromJson({'id': userId, 'email': email, ...profileJson});
+    } catch (e) {
+      log("currentUser error: $e");
+      throw Exception("Mevcut kullanıcı alınamadı: $e");
     }
   }
 }

@@ -6,8 +6,6 @@ class UserModel {
   final String name;
   final String surname;
   final String? phone;
-  final String? address;
-  final UserRole? role;
   final DateTime createdAt;
 
   UserModel({
@@ -16,20 +14,16 @@ class UserModel {
     required this.name,
     required this.surname,
     this.phone,
-    this.address,
-    this.role,
     required this.createdAt,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      id: json['id'] as String,
-      email: json['email'] as String,
-      name: json['name'] as String,
+      id: json['id'],
+      email: json['email'],
+      name: json['name'],
       surname: json['surname'],
-      phone: json['phone'] as String?,
-      address: json['address'] as String?,
-      role: parseUserRole(json['role']),
+      phone: json['phone'],
       createdAt: DateTime.parse(json['created_at']),
     );
   }
@@ -40,9 +34,7 @@ class UserModel {
       'email': email,
       'name': name,
       'surname': surname,
-      'phone': phone,
-      'address': address,
-      'role': role?.name,
+      'phone': phone!,
       'created_at': createdAt.toIso8601String(),
     };
   }
@@ -54,8 +46,6 @@ class UserModel {
       name: name,
       surname: surname,
       phone: phone,
-      address: address,
-      role: role!,
       createdAt: createdAt,
     );
   }
@@ -67,19 +57,17 @@ class UserModel {
       name: user.name,
       surname: user.surname,
       phone: user.phone,
-      address: user.address,
-      role: user.role,
       createdAt: user.createdAt,
     );
   }
 
-  static UserRole parseUserRole(String role) {
-    switch (role) {
-      case 'admin':
-        return UserRole.admin;
-      case 'customer':
-      default:
-        return UserRole.customer;
-    }
-  }
+  // static UserRole parseUserRole(String role) {
+  //   switch (role) {
+  //     case 'admin':
+  //       return UserRole.admin;
+  //     case 'customer':
+  //     default:
+  //       return UserRole.customer;
+  //   }
+  // }
 }

@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
@@ -24,7 +25,6 @@ class SignUpForm extends StatelessWidget {
             builder: (_) => const Center(child: CircularProgressIndicator()),
           );
         } else {
-          Navigator.of(context).pop();
           if (state is AuthSuccess) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('Hoşgeldin ${state.user.name}')),
@@ -111,6 +111,7 @@ class SignUpForm extends StatelessWidget {
                     ),
                   );
                 }
+                context.router.push(HomeRoute());
               },
               primaryColor: Colors.black,
               secondaryColor: Colors.black,

@@ -9,7 +9,11 @@ class ApiConfig {
   static const Duration connectionTimeout = Duration(milliseconds: 15000);
 
   static const String baseUrlAuth =
-      'https://rhhrrmqaptiacdkipsvx.supabase.co/auth/v1/token?grant_type=password';
+      'https://rhhrrmqaptiacdkipsvx.supabase.co/auth/v1/';
+
+  static const String login = 'token?grant_type=password';
+
+  static const String signUp = 'signup';
 
   static const String users = "users";
   static const String orders = "orders";

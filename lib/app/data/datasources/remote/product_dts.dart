@@ -14,7 +14,7 @@ class SupabaseProductRemoteDatasource implements ProductRemoteDatasource {
     }
 
     final response = await dio.get('products', queryParameters: queryParams);
-    log("Supabase Response: $response");
+    //log("Supabase Response: $response");
 
     return List<Map<String, dynamic>>.from(response.data);
   }
@@ -46,7 +46,7 @@ class SupabaseProductRemoteDatasource implements ProductRemoteDatasource {
 
     if (response.data == null || response.data.isEmpty) return [];
 
-    log('Search product: ${response.data}');
+    //log('Search product: ${response.data}');
 
     return List<Map<String, dynamic>>.from(response.data);
   }

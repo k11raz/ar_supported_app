@@ -11,7 +11,11 @@ abstract class DioClient {
       headers: ApiConfig.headers,
       responseType: ResponseType.json,
     ),
-  )..interceptors.add(DioInterceptor());
+  )..interceptors.addAll( [
+    DioInterceptor(),
+
+  ]
+  );
   static void setAuthToken(String token) {
     dio.options.headers['Authorization'] = 'Bearer $token';
   }

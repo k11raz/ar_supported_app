@@ -42,7 +42,7 @@ class SupabaseFavoritesRemoteDataSource implements FavoritesRemoteDataSource {
     }
 
     final response = await dio.get('fav_info', queryParameters: queryParams);
-    log("Supabase Favorites Response: $response");
+    //log("Supabase Favorites Response: $response");
 
     return List<Map<String, dynamic>>.from(response.data);
   }

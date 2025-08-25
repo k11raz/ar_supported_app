@@ -9,7 +9,7 @@ class SupabaseCategoryRemoteDatasource implements CategoryRemoteDataSource {
   @override
   Future<List<Map<String, dynamic>>> getCategories() async {
     final response = await dio.get('categories');
-    log("Supabase categories: $response");
+    //log("Supabase categories: $response");
     return List<Map<String, dynamic>>.from(response.data);
   }
 

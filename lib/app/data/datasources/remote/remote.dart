@@ -24,26 +24,23 @@ abstract class AuthRemoteDataSource {
     String? phone,
   });
 
-   Future<UserModel> signIn({
-    required String email,
-    required String password,
-  });
+  Future<UserModel> signIn({required String email, required String password});
+
+  Future<UserModel> currentUser();
 }
 
 abstract class CardRemoteDataSource {
   Future<void> addProductToCard({
     required ProductEntity product,
-    int quantity = 1
+    int quantity = 1,
   });
 
   Future<List<Map<String, dynamic>>> fetchBasketItems({String? orderId});
 }
 
 abstract class FavoritesRemoteDataSource {
-  Future<List<Map<String,dynamic>>> fetchFavorites({String? id});
+  Future<List<Map<String, dynamic>>> fetchFavorites({String? id});
   Future<void> deleteFavoriteById(int id);
   Future<void> deleteFavorites();
-   Future<void> addProductToFavorites({
-    required ProductEntity product,
-  });
+  Future<void> addProductToFavorites({required ProductEntity product});
 }
