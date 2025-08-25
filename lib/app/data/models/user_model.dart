@@ -1,4 +1,4 @@
-import 'package:bus/app/domain/entities/user.dart';
+import 'package:bus/app/domain/entities/user_entity.dart';
 
 class UserModel {
   final String id;

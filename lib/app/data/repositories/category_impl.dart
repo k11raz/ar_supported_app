@@ -1,7 +1,7 @@
-import 'package:bus/app/data/datasources/remote/category.dart';
+import 'package:bus/app/data/datasources/remote/category_dts.dart';
 import 'package:bus/app/data/datasources/remote/remote.dart';
-import 'package:bus/app/data/models/category.dart';
-import 'package:bus/app/domain/entities/category.dart';
+import 'package:bus/app/data/models/category_model.dart';
+import 'package:bus/app/domain/entities/category_entity.dart';
 import 'package:bus/app/domain/repositories/category_repository.dart';
 
 class CategoryRepositoryImpl implements CategoryRepository {

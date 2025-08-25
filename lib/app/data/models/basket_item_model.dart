@@ -1,5 +1,4 @@
-import 'package:bus/app/domain/entities/basket_item.dart';
-import 'package:bus/app/domain/entities/product.dart';
+import 'package:bus/app/domain/entities/basket_item_entity.dart';
 
 class BasketItemModel {
   final String orderId;

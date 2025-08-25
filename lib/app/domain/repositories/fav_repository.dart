@@ -1,5 +1,5 @@
-import 'package:bus/app/domain/entities/favorites_item.dart';
-import 'package:bus/app/domain/entities/product.dart';
+import 'package:bus/app/domain/entities/favorites_item_entity.dart';
+import 'package:bus/app/domain/entities/product_entity.dart';
 
 abstract class FavoritesRepository {
   Future<List<FavoritesItemEntity>> fetchFavorites({String? id});

@@ -1,7 +1,3 @@
-import 'dart:developer';
-
-import 'package:bus/app/services/cache/user_cache.dart';
-
 import '../../app.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
@@ -25,7 +21,6 @@ class AuthRepositoryImpl implements AuthRepository {
       phone: phone,
     );
 
-    // Burada model'i entity'ye çeviriyoruz
     return model.toEntity();
   }
 

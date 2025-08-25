@@ -1,5 +1,5 @@
-import 'package:bus/app/domain/entities/basket_item.dart';
-import 'package:bus/app/domain/entities/order_items.dart';
+import 'package:bus/app/domain/entities/basket_item_entity.dart';
+import 'package:bus/app/domain/entities/order_items_entity.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class CardState extends Equatable {

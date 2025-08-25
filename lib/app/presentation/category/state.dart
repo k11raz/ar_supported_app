@@ -1,4 +1,4 @@
-import 'package:bus/app/domain/entities/category.dart';
+import 'package:bus/app/domain/entities/category_entity.dart';
 import 'package:equatable/equatable.dart';
 
 class CategoryState extends Equatable {

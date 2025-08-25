@@ -1,5 +1,4 @@
 import 'package:bus/app/domain/domain.dart';
-import 'package:bus/app/domain/repositories/order_repository.dart';
 
 class AddToCartUseCase {
   final CardRepository repository;

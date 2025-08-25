@@ -25,7 +25,7 @@ class NSearchContainerAnchor extends StatelessWidget {
       barHintText: hintText,
       barLeading: Icon(icon, color: Theme.of(context).iconTheme.color),
       barBackgroundColor: WidgetStatePropertyAll(
-        showBackground ? Theme.of(context).colorScheme.surfaceVariant : Colors.transparent,
+        showBackground ? Theme.of(context).colorScheme.surfaceContainerHighest : Colors.transparent,
       ),
       barElevation: WidgetStateProperty.all(0),
       suggestionsBuilder: (context, searchController) {

@@ -1,9 +1,5 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:bus/app/app.dart';
-import 'package:bus/app/core/widgets/searchBar/search_anchor.dart';
-import 'package:bus/app/domain/usecases/products/search_product.dart';
-import 'package:bus/app/presentation/search/widgets/category_card.dart';
-import 'package:bus/app/presentation/search/widgets/product_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -28,7 +24,7 @@ class SearchView extends StatelessWidget {
                 height: 24,
                 child: BlocProvider(
                   create: (_) => CategoryBloc(
-                    GetCategory(
+                     getCategory: GetCategory(
                       CategoryRepositoryImpl(
                         SupabaseCategoryRemoteDatasource(),
                       ),
@@ -83,10 +79,9 @@ class SearchView extends StatelessWidget {
 
               BlocProvider<ProductsBloc>(
                 create: (_) => ProductsBloc(
-                  GetProducts(
+                  getProducts: GetProducts(
                     ProductRepositoryImpl(SupabaseProductRemoteDatasource()),
-                  ),
-                  GetSearchProducts(
+                  ), getSearchProducts: GetSearchProducts(
                     ProductRepositoryImpl(SupabaseProductRemoteDatasource()),
                   ),
                 )..add(FetchProductsEvent()),
@@ -111,10 +106,10 @@ class SearchView extends StatelessWidget {
               Expanded(
                 child: BlocProvider(
                   create: (_) => ProductsBloc(
-                    GetProducts(
+                    
+                     getProducts: GetProducts(
                       ProductRepositoryImpl(SupabaseProductRemoteDatasource()),
-                    ),
-                    GetSearchProducts(
+                    ), getSearchProducts: GetSearchProducts(
                       ProductRepositoryImpl(SupabaseProductRemoteDatasource()),
                     ),
                   )..add(FetchProductsEvent()),

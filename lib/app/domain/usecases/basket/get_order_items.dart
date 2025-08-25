@@ -1,5 +1,4 @@
-import 'package:bus/app/domain/entities/basket_item.dart';
-import 'package:bus/app/domain/entities/order_items.dart';
+import 'package:bus/app/domain/entities/basket_item_entity.dart';
 import 'package:bus/app/domain/repositories/order_repository.dart';
 
 class GetOrderItems {

@@ -1,5 +1,5 @@
-import 'package:bus/app/domain/entities/product.dart';
-import 'package:bus/app/domain/repositories/product.dart';
+import 'package:bus/app/domain/entities/product_entity.dart';
+import 'package:bus/app/domain/repositories/product_repository.dart';
 
 class GetProducts {
   final ProductRepository repository;

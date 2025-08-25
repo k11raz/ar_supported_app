@@ -1,4 +1,4 @@
-import 'package:bus/app/domain/entities/order_items.dart';
+import 'package:bus/app/domain/entities/order_items_entity.dart';
 
 class OrderItemModel extends OrderItemsEntity {
   OrderItemModel({

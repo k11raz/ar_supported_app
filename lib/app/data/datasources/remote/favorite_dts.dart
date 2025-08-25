@@ -1,6 +1,6 @@
 import 'dart:developer';
 import 'package:bus/app/data/data.dart';
-import 'package:bus/app/domain/entities/product.dart';
+import 'package:bus/app/domain/entities/product_entity.dart';
 import 'package:dio/dio.dart';
 
 class SupabaseFavoritesRemoteDataSource implements FavoritesRemoteDataSource {
@@ -25,13 +25,11 @@ class SupabaseFavoritesRemoteDataSource implements FavoritesRemoteDataSource {
 
   @override
   Future<void> deleteFavoriteById(int id) {
-    // TODO: implement deleteFavoriteById
     throw UnimplementedError();
   }
 
   @override
   Future<void> deleteFavorites() {
-    // TODO: implement deleteFavorites
     throw UnimplementedError();
   }
 

@@ -1,4 +1,4 @@
-import 'package:bus/app/domain/entities/favorites_item.dart';
+import 'package:bus/app/domain/entities/favorites_item_entity.dart';
 import 'package:bus/app/domain/repositories/fav_repository.dart';
 
 class GetFavorites {

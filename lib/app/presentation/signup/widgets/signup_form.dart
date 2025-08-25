@@ -1,6 +1,3 @@
-import 'package:bus/app/presentation/signup/bloc.dart';
-import 'package:bus/app/presentation/signup/event.dart';
-import 'package:bus/app/presentation/signup/state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';

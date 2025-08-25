@@ -1,10 +1,6 @@
 import 'dart:developer';
 import 'package:bus/app/app.dart';
-import 'package:bus/app/domain/entities/order_items.dart';
-import 'package:bus/app/services/cache/cache_service.dart';
-import 'package:bus/app/services/cache/user_cache.dart';
 import 'package:dio/dio.dart';
-import 'package:uuid/uuid.dart';
 
 class SupabaseCardRemoteDatasource implements CardRemoteDataSource {
   final dio = DioClient.dio;
@@ -16,7 +12,7 @@ class SupabaseCardRemoteDatasource implements CardRemoteDataSource {
     int quantity = 1,
   }) async {
     // Auth yoksa guest UUID oluştur
-    final userId = Uuid().v4();
+    //final userId = Uuid().v4();
 
     try {
       // Pending order var mı?

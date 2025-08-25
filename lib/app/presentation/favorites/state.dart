@@ -1,5 +1,4 @@
-import 'package:bus/app/domain/entities/favorites.dart';
-import 'package:bus/app/domain/entities/favorites_item.dart';
+import 'package:bus/app/domain/entities/favorites_item_entity.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class FavoritesState extends Equatable {

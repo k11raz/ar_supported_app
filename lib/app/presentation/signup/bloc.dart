@@ -6,12 +6,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final SignUpUseCase signUpUseCase;
 
-  AuthBloc(this.signUpUseCase) : super(AuthInitial()) {
+  AuthBloc({required this.signUpUseCase}) : super(AuthInitial()) {
     on<SignUpEvent>(_onSignUpEvent);
   }
 
   Future<void> _onSignUpEvent(
-      SignUpEvent event, Emitter<AuthState> emit) async {
+    SignUpEvent event,
+    Emitter<AuthState> emit,
+  ) async {
     emit(AuthLoading());
     try {
       final user = await signUpUseCase(

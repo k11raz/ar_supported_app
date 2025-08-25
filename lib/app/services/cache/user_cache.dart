@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:bus/app/app.dart';
-import 'package:bus/app/services/cache/i_cache_service.dart';
 
 class UserCacheService {
   static const userKey = 'userToken';
@@ -10,8 +9,8 @@ class UserCacheService {
 
   UserCacheService(this.cache);
 
-  bool get isLoggedIn {
-    final token = cache.read(userKey);
+  Future<bool> get isLoggedIn async {
+    final token = await cache.read(userKey);
     return token.toString().isNotEmpty;
   }
 
@@ -33,7 +32,7 @@ class UserCacheService {
     await cache.write(accessTokenKey, token);
   }
 
-  Future<String> getAccessToken() async {
+  Future<String?> getAccessToken() async {
     return await cache.read(accessTokenKey);
   }
 

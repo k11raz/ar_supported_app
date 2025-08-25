@@ -1,7 +1,7 @@
 import 'dart:developer';
 
-import 'package:bus/app/domain/entities/order_items.dart';
-import 'package:bus/app/domain/usecases/add_to_card.dart';
+import 'package:bus/app/domain/entities/order_items_entity.dart';
+import 'package:bus/app/domain/usecases/basket/add_to_card.dart';
 import 'package:bus/app/domain/usecases/basket/get_order_items.dart';
 import 'package:bus/app/presentation/product_detail/widgets/event.dart';
 import 'package:bus/app/presentation/product_detail/widgets/state.dart';
@@ -11,7 +11,7 @@ import 'package:uuid/uuid.dart';
 class CardBloc extends Bloc<CardEvent, CardState> {
   AddToCartUseCase addToCartUseCase;
   GetOrderItems getOrderItems;
-  CardBloc(this.addToCartUseCase, this.getOrderItems) : super(CardInitial()) {
+  CardBloc({required this.addToCartUseCase,required this.getOrderItems}) : super(CardInitial()) {
     on<AddProductToCardEvent>(_onAddProduct);
     on<RemoveProductFromCardEvent>(_onRemoveProduct);
     on<FetchOrderItemsEvent>(_onLoadOrderItems);

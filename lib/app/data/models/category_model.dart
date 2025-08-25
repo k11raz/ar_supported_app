@@ -1,4 +1,4 @@
-import 'package:bus/app/domain/entities/category.dart';
+import 'package:bus/app/domain/entities/category_entity.dart';
 
 class CategoryModel {
   final String id;

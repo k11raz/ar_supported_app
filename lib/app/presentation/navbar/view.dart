@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:bus/app/domain/entities/product.dart';
 import 'package:bus/app/routes/app_router.gr.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +13,7 @@ class LandingView extends StatelessWidget {
         HomeRoute(),
         SearchRoute(),
         MenuRoute(),
-        BasketRoute(),
+        MainTabRoute(),
         UserRoute(),
         //userCacheService.isLoggedIn ? const SettingUserRoute() : const UserRoute()
       ],

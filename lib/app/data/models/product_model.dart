@@ -1,4 +1,4 @@
-import 'package:bus/app/domain/entities/product.dart';
+import 'package:bus/app/domain/entities/product_entity.dart';
 
 class ProductModel {
   final String id;

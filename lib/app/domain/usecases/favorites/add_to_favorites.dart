@@ -1,5 +1,4 @@
 import 'package:bus/app/domain/domain.dart';
-import 'package:bus/app/domain/repositories/fav_repository.dart';
 
 class AddToFavoritesUseCase {
   final FavoritesRepository repository;

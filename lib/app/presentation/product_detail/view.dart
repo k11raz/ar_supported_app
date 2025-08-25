@@ -1,10 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:bus/app/data/datasources/remote/card.dart';
-import 'package:bus/app/data/repositories/card_impl.dart';
-import 'package:bus/app/domain/usecases/add_to_card.dart';
-import 'package:bus/app/domain/usecases/basket/get_order_items.dart';
-import 'package:bus/app/presentation/product_detail/widgets/bloc.dart';
-import 'package:bus/app/presentation/product_detail/widgets/event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../app.dart';
@@ -31,7 +25,7 @@ class ProductDetailView extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<ProductDetailBloc>(create: (_) => ProductDetailBloc()),
-        BlocProvider<CardBloc>(create: (_) => CardBloc(addToCartUseCase, fetchOrders)),
+        BlocProvider<CardBloc>(create: (_) => CardBloc(addToCartUseCase: addToCartUseCase, getOrderItems: fetchOrders)),
       ],
 
       child: Builder(
@@ -187,6 +181,20 @@ class ProductDetailView extends StatelessWidget {
                                   tilePadding: EdgeInsets.zero,
                                   title: const Text(
                                     'MAĞAZA STOK DURUMU',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.normal,
+                                    ),
+                                  ),
+                                  children: <Widget>[
+                                    ListTile(
+                                      title: Text("${product.stock} ADET"),
+                                    ),
+                                  ],
+                                ),
+                                ExpansionTile(
+                                  tilePadding: EdgeInsets.zero,
+                                  title: const Text(
+                                    'ÜRÜN YORUMLARI',
                                     style: TextStyle(
                                       fontWeight: FontWeight.normal,
                                     ),

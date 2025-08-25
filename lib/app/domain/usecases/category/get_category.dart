@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:bus/app/domain/entities/category.dart';
+import 'package:bus/app/domain/entities/category_entity.dart';
 import 'package:bus/app/domain/repositories/category_repository.dart';
 
 class GetCategory {

@@ -1,5 +1,5 @@
 
-import 'package:bus/app/domain/entities/favorites_item.dart';
+import 'package:bus/app/domain/entities/favorites_item_entity.dart';
 
 
 class FavoritesItemModel {

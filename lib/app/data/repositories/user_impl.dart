@@ -1,7 +1,7 @@
 import 'package:bus/app/data/datasources/remote/remote.dart';
-import 'package:bus/app/data/datasources/remote/user_remote.dart';
+import 'package:bus/app/data/datasources/remote/user_dts.dart';
 import 'package:bus/app/data/models/user_model.dart';
-import 'package:bus/app/domain/entities/user.dart';
+import 'package:bus/app/domain/entities/user_entity.dart';
 import 'package:bus/app/domain/repositories/user_repository.dart';
 
 class UserRepositoryImpl implements UserRepository {

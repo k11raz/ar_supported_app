@@ -1,4 +1,4 @@
-import 'package:bus/app/domain/entities/product.dart';
+import 'package:bus/app/domain/entities/product_entity.dart';
 import 'package:equatable/equatable.dart';
 
 class ProductsState extends Equatable {

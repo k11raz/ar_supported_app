@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:bus/app/domain/entities/favorites.dart';
+import 'package:bus/app/domain/entities/favorites_entity.dart';
 import 'package:bus/app/domain/usecases/favorites/add_to_favorites.dart';
 import 'package:bus/app/domain/usecases/favorites/get_favorites.dart';
 import 'package:bus/app/presentation/favorites/event.dart';
@@ -11,7 +11,7 @@ import 'package:uuid/uuid.dart';
 class FavoritesBloc extends Bloc<FavoritesEvent, FavoritesState> {
   AddToFavoritesUseCase addToFavoritesUseCase;
   GetFavorites getFavorites;
-  FavoritesBloc(this.addToFavoritesUseCase, this.getFavorites)
+  FavoritesBloc({required this.addToFavoritesUseCase,required this.getFavorites})
     : super(FavoritesInitial()) {
     on<AddProductToFavoritesEvent>(_onAddProduct);
     on<FetchFavoritesEvent>(_onLoadFavoritesItems);

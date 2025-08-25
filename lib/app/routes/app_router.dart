@@ -3,7 +3,6 @@ import 'package:bus/app/routes/app_router.gr.dart';
 
 @AutoRouterConfig(replaceInRouteName: 'View,Route')
 class AppRouter extends RootStackRouter {
-  
   @override
   List<AutoRoute> get routes => [
     AutoRoute(
@@ -14,7 +13,14 @@ class AppRouter extends RootStackRouter {
         AutoRoute(page: HomeRoute.page),
         AutoRoute(page: MenuRoute.page),
         AutoRoute(page: SearchRoute.page),
-        AutoRoute(page: BasketRoute.page),
+        //AutoRoute(page: BasketRoute.page),
+        AutoRoute(
+          page: MainTabRoute.page,
+          children: [
+            AutoRoute(page: BasketRoute.page, initial: true),
+            AutoRoute(page: FavoritesRoute.page),
+          ],
+        ),
         AutoRoute(page: UserRoute.page),
       ],
     ),

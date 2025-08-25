@@ -1,7 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:bus/app/presentation/profile/bloc.dart';
-import 'package:bus/app/presentation/profile/event.dart';
-import 'package:bus/app/presentation/profile/state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
@@ -9,17 +6,15 @@ import 'package:iconsax/iconsax.dart';
 import '../../../app.dart';
 
 class SignInForm extends StatelessWidget {
-  const SignInForm({
-    super.key,
-  });
+  const SignInForm({super.key});
 
   @override
   Widget build(BuildContext context) {
     final formKey = GlobalKey<FormState>();
     final emailController = TextEditingController();
     final passwordController = TextEditingController();
-    return BlocListener<LoginBloc,LoginState>(
-     listener: (context, state) {
+    return BlocListener<LoginBloc, LoginState>(
+      listener: (context, state) {
         if (state is LoginLoading) {
           showDialog(
             context: context,
@@ -30,7 +25,9 @@ class SignInForm extends StatelessWidget {
           Navigator.of(context).pop();
           if (state is LoginSuccess) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Başarıyla giriş yapıldı ${state.user.name}')),
+              SnackBar(
+                content: Text('Başarıyla giriş yapıldı ${state.user.name}'),
+              ),
             );
           } else if (state is LoginFailure) {
             ScaffoldMessenger.of(
@@ -52,9 +49,9 @@ class SignInForm extends StatelessWidget {
                   ? null
                   : 'Geçerli bir e-posta girin.',
             ),
-      
+
             const SizedBox(height: NSizes.spaceBtwInputFields),
-      
+
             CustomTextFormField(
               controller: passwordController,
               onChanged: (value) {},
@@ -69,9 +66,9 @@ class SignInForm extends StatelessWidget {
                   ? null
                   : 'Şifre en az 6 karakter olmalı.',
             ),
-      
+
             const SizedBox(height: 32),
-      
+
             CustomButton(
               text: "GİRİŞ YAP",
               onPressed: () {
@@ -88,7 +85,7 @@ class SignInForm extends StatelessWidget {
               secondaryColor: Colors.black,
             ),
           ],
-        )
+        ),
       ),
     );
   }

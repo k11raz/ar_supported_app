@@ -1,5 +1,4 @@
-import 'package:bus/app/domain/entities/favorites.dart';
-import 'package:bus/app/domain/entities/product.dart';
+import 'package:bus/app/domain/entities/favorites_entity.dart';
 
 class FavoritesModel {
   final String userId;

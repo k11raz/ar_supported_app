@@ -1,8 +1,8 @@
-import 'package:bus/app/data/datasources/remote/product.dart';
+import 'package:bus/app/data/datasources/remote/product_dts.dart';
 import 'package:bus/app/data/datasources/remote/remote.dart';
-import 'package:bus/app/data/models/product.dart';
-import 'package:bus/app/domain/entities/product.dart';
-import 'package:bus/app/domain/repositories/product.dart';
+import 'package:bus/app/data/models/product_model.dart';
+import 'package:bus/app/domain/entities/product_entity.dart';
+import 'package:bus/app/domain/repositories/product_repository.dart';
 
 class ProductRepositoryImpl implements ProductRepository {
   final ProductRemoteDatasource remoteDatasource;
@@ -26,7 +26,6 @@ class ProductRepositoryImpl implements ProductRepository {
   
   @override
   void deleteProduct(int id) {
-    // TODO: implement deleteProduct
   }
   
   @override

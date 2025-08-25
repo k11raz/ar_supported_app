@@ -1,11 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:bus/app/data/datasources/remote/favorite.dart';
-import 'package:bus/app/data/repositories/favorite_impl.dart';
-import 'package:bus/app/domain/usecases/favorites/add_to_favorites.dart';
-import 'package:bus/app/domain/usecases/favorites/get_favorites.dart';
-import 'package:bus/app/presentation/favorites/bloc.dart';
-import 'package:bus/app/presentation/favorites/event.dart';
-import 'package:bus/app/presentation/favorites/state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -25,7 +18,7 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final favoritesRemoteDataSource = SupabaseFavoritesRemoteDataSource();
-    final favoritesRepositoryImpl = FavoriteRepositoryImpl(
+    final favoritesRepositoryImpl = FavoritesRepositoryImpl(
       favoritesRemoteDataSource,
     );
     final addToFavoritesUseCase = AddToFavoritesUseCase(
@@ -83,7 +76,7 @@ class ProductCard extends StatelessWidget {
               ),
               BlocProvider(
                 create: (context) =>
-                    FavoritesBloc(addToFavoritesUseCase, getFavorites),
+                    FavoritesBloc(addToFavoritesUseCase: addToFavoritesUseCase, getFavorites: getFavorites),
                 child: BlocBuilder<FavoritesBloc, FavoritesState>(
                   builder: (context, state) {
                     return IconButton(

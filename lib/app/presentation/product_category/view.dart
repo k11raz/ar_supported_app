@@ -1,7 +1,5 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:bus/app/app.dart';
-import 'package:bus/app/domain/usecases/products/search_product.dart';
-import 'package:bus/app/presentation/search/widgets/product_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -16,8 +14,12 @@ class ProductCategoryView extends StatelessWidget {
       backgroundColor: Colors.black,
       body: BlocProvider(
         create: (_) => ProductsBloc(
-          GetProducts(ProductRepositoryImpl(SupabaseProductRemoteDatasource())),
-          GetSearchProducts(ProductRepositoryImpl(SupabaseProductRemoteDatasource())),
+          getProducts: GetProducts(
+            ProductRepositoryImpl(SupabaseProductRemoteDatasource()),
+          ),
+          getSearchProducts: GetSearchProducts(
+            ProductRepositoryImpl(SupabaseProductRemoteDatasource()),
+          ),
         )..add(FetchProductsByCategoryEvent(category.id)),
         child: CustomScrollView(
           slivers: [

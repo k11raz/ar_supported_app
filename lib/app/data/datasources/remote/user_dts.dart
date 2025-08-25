@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:bus/app/data/datasources/remote/remote.dart';
 import 'package:bus/app/services/network/dio_client.dart';
 
@@ -7,7 +8,7 @@ class SupabaseUserRemoteDatasource implements UserRemoteDatasource {
   @override
   Future<List<Map<String, dynamic>>> getUsers() async {
     final response = await dio.get('users');
-    print(response);
+    log(response.data);
     return List<Map<String, dynamic>>.from(response.data);
   }
 

@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:bus/app/services/network/api_config.dart';
 import 'package:dio/dio.dart';
 import '../../../app.dart';
 
@@ -28,13 +29,13 @@ class SupabaseAuthRemoteDataSource implements AuthRemoteDataSource {
         ),
       );
 
-      log(dio.options.headers['apikey']);
+      //log(dio.options.headers['apikey']);
 
-      log('Auth response: ${authResponse.data}');
+      //log('Auth response: ${authResponse.data}');
 
-      if (authResponse.statusCode != 200 && authResponse.statusCode != 201) {
-        throw Exception('Auth signup failed: ${authResponse.data}');
-      }
+      // if (authResponse.statusCode != 200 && authResponse.statusCode != 201) {
+      //   throw Exception('Auth signup failed: ${authResponse.data}');
+      // }
 
       final userId = authResponse.data['user']['id'];
       final accessToken = authResponse.data['access_token'];
@@ -54,7 +55,7 @@ class SupabaseAuthRemoteDataSource implements AuthRemoteDataSource {
       }
 
       final profileResponse = await dio.post(
-        'https://rhhrrmqaptiacdkipsvx.supabase.co/rest/v1/users',
+        '${ApiConfig.baseUrl}${ApiConfig.users}',
         data: users,
         options: Options(
           headers: {
@@ -66,15 +67,15 @@ class SupabaseAuthRemoteDataSource implements AuthRemoteDataSource {
         ),
       );
 
-      log('Profile insert response: ${profileResponse.data}');
+      //log('Profile insert response: ${profileResponse.data}');
 
       return UserModel.fromJson(profileResponse.data[0]);
     } on DioException catch (e) {
-      log('DioException status: ${e.response?.statusCode}');
-      log('DioException data: ${e.response?.data}');
+      // log('DioException status: ${e.response?.statusCode}');
+      // log('DioException data: ${e.response?.data}');
       throw Exception("oç supabase failed: $e");
     } catch (e) {
-      log('Signup error: $e');
+      //log('Signup error: $e');
       throw Exception("oe supabse failed: $e");
     }
   }
@@ -88,14 +89,8 @@ class SupabaseAuthRemoteDataSource implements AuthRemoteDataSource {
   }) async {
     try {
       final authResponse = await dio.post(
-        'https://rhhrrmqaptiacdkipsvx.supabase.co/auth/v1/token?grant_type=password',
+        ApiConfig.baseUrlAuth,
         data: {'email': email, 'password': password},
-        options: Options(
-          headers: {
-            'apikey': dio.options.headers['apikey'],
-            'Content-Type': 'application/json',
-          },
-        ),
       );
 
       if (authResponse.statusCode != 200) {
@@ -108,14 +103,8 @@ class SupabaseAuthRemoteDataSource implements AuthRemoteDataSource {
       DioClient.setAuthToken(accessToken);
 
       final profileResponse = await dio.get(
-        'https://rhhrrmqaptiacdkipsvx.supabase.co/rest/v1/users',
+        ApiConfig.baseUrl + ApiConfig.users,
         queryParameters: {'id': 'eq.$userId', 'select': '*'},
-        options: Options(
-          headers: {
-            'apikey': dio.options.headers['apikey'],
-            'Authorization': 'Bearer $accessToken',
-          },
-        ),
       );
 
       if (profileResponse.statusCode != 200 ||

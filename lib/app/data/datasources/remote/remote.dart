@@ -1,6 +1,3 @@
-import 'package:bus/app/domain/entities/favorites.dart';
-import 'package:bus/app/domain/entities/order_items.dart';
-
 import '../../../app.dart';
 
 abstract class UserRemoteDatasource {
