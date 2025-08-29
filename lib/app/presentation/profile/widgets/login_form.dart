@@ -1,8 +1,8 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
-
 import '../../../app.dart';
 
 class SignInForm extends StatelessWidget {
@@ -24,15 +24,37 @@ class SignInForm extends StatelessWidget {
         } else {
           Navigator.of(context).pop();
           if (state is LoginSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Başarıyla giriş yapıldı ${state.user.name}'),
+            final snackBar = SnackBar(
+              elevation: 0,
+              behavior: SnackBarBehavior.floating,
+              backgroundColor: Colors.transparent,
+              content: AwesomeSnackbarContent(
+                title: 'Merhaba, ${state.user.name}',
+                message: ' Girişiniz başarıyla gerçekleşmiştir.',
+                contentType: ContentType.success,
               ),
             );
+
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(snackBar);
+
+            context.router.push(HomeRoute());
           } else if (state is LoginFailure) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.message)));
+            final snackBar = SnackBar(
+              elevation: 0,
+              behavior: SnackBarBehavior.floating,
+              backgroundColor: Colors.transparent,
+              content: AwesomeSnackbarContent(
+                title: 'Merhaba, Girişiniz Başarısız Olmuştur.',
+                message: 'E-mail veya Şifrenizi tekrardan giriniz.',
+                contentType: ContentType.failure,
+              ),
+            );
+
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(snackBar);
           }
         }
       },
@@ -78,8 +100,10 @@ class SignInForm extends StatelessWidget {
                       email: emailController.text,
                       password: passwordController.text,
                     ),
-                  );
+                  ); 
                 }
+
+                
               },
               primaryColor: Colors.black,
               secondaryColor: Colors.black,

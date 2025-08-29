@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:bus/app/domain/entities/order_items_entity.dart';
 import 'package:bus/app/domain/usecases/basket/add_to_card.dart';
 import 'package:bus/app/domain/usecases/basket/get_order_items.dart';
+import 'package:bus/app/domain/usecases/basket/remove_basket_usecase.dart';
 import 'package:bus/app/presentation/product_detail/widgets/event.dart';
 import 'package:bus/app/presentation/product_detail/widgets/state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,7 +12,12 @@ import 'package:uuid/uuid.dart';
 class CardBloc extends Bloc<CardEvent, CardState> {
   AddToCartUseCase addToCartUseCase;
   GetOrderItems getOrderItems;
-  CardBloc({required this.addToCartUseCase,required this.getOrderItems}) : super(CardInitial()) {
+  RemoveOrderItemUseCase removeOrderItemUseCase;
+  CardBloc({
+    required this.addToCartUseCase,
+    required this.getOrderItems,
+    required this.removeOrderItemUseCase,
+  }) : super(CardInitial()) {
     on<AddProductToCardEvent>(_onAddProduct);
     on<RemoveProductFromCardEvent>(_onRemoveProduct);
     on<FetchOrderItemsEvent>(_onLoadOrderItems);
@@ -79,15 +85,19 @@ class CardBloc extends Bloc<CardEvent, CardState> {
     }
   }
 
-  void _onRemoveProduct(
+  Future<void> _onRemoveProduct(
     RemoveProductFromCardEvent event,
     Emitter<CardState> emit,
-  ) {
-    if (state is CardSuccess) {
-      final updatedItems = (state as CardSuccess).items
-          .where((i) => i.productId != event.product.id)
-          .toList();
-      emit(CardSuccess(items: updatedItems));
+  ) async {
+    emit(CardLoading());
+    try {
+      await removeOrderItemUseCase(id: event.id);
+
+      final updatedFavorites = await getOrderItems();
+      emit(CardLoaded(updatedFavorites));
+    } catch (e) {
+      log('FetchProductsEvent error: $e');
+      emit(CardFailure('Ürünler yüklenemedi.'));
     }
   }
 }

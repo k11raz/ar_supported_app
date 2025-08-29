@@ -1,12 +1,15 @@
 import 'dart:developer';
-import 'package:bus/app/services/network/api_config.dart';
 import 'package:dio/dio.dart';
 import '../../../app.dart';
 
 class SupabaseAuthRemoteDataSource implements AuthRemoteDataSource {
   final Dio dio;
+  final UserCacheService userCacheService;
 
-  SupabaseAuthRemoteDataSource({required this.dio});
+  SupabaseAuthRemoteDataSource({
+    required this.dio,
+    required this.userCacheService,
+  });
 
   @override
   Future<UserModel> signUp({
@@ -15,6 +18,7 @@ class SupabaseAuthRemoteDataSource implements AuthRemoteDataSource {
     required String name,
     required String surname,
     String? phone,
+    required DateTime createdAt,
   }) async {
     try {
       final authResponse = await dio.post(
@@ -23,29 +27,28 @@ class SupabaseAuthRemoteDataSource implements AuthRemoteDataSource {
       );
 
       final userId = authResponse.data['user']['id'];
-      final accessToken = authResponse.data['access_token'];
-      //log('access tokeeennn: $accessToken');
+      //final accessToken = authResponse.data['access_token'];
 
-      DioClient.setAuthToken(accessToken);
+      // await userCacheService.saveToken(accessToken);
 
-      final userInfo = {
-        'id': userId,
-        'email': email,
-        'name': name,
-        'surname': surname,
-        'phone': (phone != null && phone.isNotEmpty) ? phone : null,
-        'created_at': DateTime.now().toIso8601String(),
-      };
+      // await userCacheService.getAccessToken();
 
-      final profileResponse = await dio.post(ApiConfig.users, data: userInfo);
+      final user = UserModel(
+        id: userId,
+        email: email,
+        name: name,
+        surname: surname,
+        phone: phone,
+        createdAt: DateTime.now(),
+      );
 
-      return UserModel.fromJson(profileResponse.data);
+      await dio.post(ApiConfig.baseUrl + ApiConfig.users, data: user);
+
+      return user;
     } catch (e) {
-      log("$e");
-      throw Exception("oe supabse failed: $e");
+      throw Exception("Supabase Failed: $e");
     }
   }
-
   //LOGIN
 
   @override
@@ -62,10 +65,10 @@ class SupabaseAuthRemoteDataSource implements AuthRemoteDataSource {
       final accessToken = authResponse.data['access_token'];
       final userId = authResponse.data['user']['id'];
 
-      DioClient.setAuthToken(accessToken);
+      await userCacheService.saveToken(accessToken);
 
       final profileResponse = await dio.get(
-        ApiConfig.users,
+        ApiConfig.baseUrl + ApiConfig.users,
         queryParameters: {'id': 'eq.$userId', 'select': '*'},
       );
 
@@ -78,7 +81,7 @@ class SupabaseAuthRemoteDataSource implements AuthRemoteDataSource {
   @override
   Future<UserModel> currentUser() async {
     try {
-      final authResponse = await dio.get("${ApiConfig.baseUrlAuth}/user");
+      final authResponse = await dio.get("${ApiConfig.baseUrl}users");
       log(authResponse.data);
 
       final userId = authResponse.data['id'];

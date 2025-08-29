@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:bus/app/app.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -26,7 +27,7 @@ class SearchView extends StatelessWidget {
                   create: (_) => CategoryBloc(
                      getCategory: GetCategory(
                       CategoryRepositoryImpl(
-                        SupabaseCategoryRemoteDatasource(),
+                        SupabaseCategoryRemoteDatasource(dio: sl<Dio>()),
                       ),
                     ),
                   )..add(FetchCategoryEvent()),
@@ -80,9 +81,9 @@ class SearchView extends StatelessWidget {
               BlocProvider<ProductsBloc>(
                 create: (_) => ProductsBloc(
                   getProducts: GetProducts(
-                    ProductRepositoryImpl(SupabaseProductRemoteDatasource()),
+                    ProductRepositoryImpl(SupabaseProductRemoteDatasource(dio: sl<Dio>())),
                   ), getSearchProducts: GetSearchProducts(
-                    ProductRepositoryImpl(SupabaseProductRemoteDatasource()),
+                    ProductRepositoryImpl(SupabaseProductRemoteDatasource(dio: sl<Dio>())),
                   ),
                 )..add(FetchProductsEvent()),
                 child: BlocBuilder<ProductsBloc, ProductsState>(
@@ -108,9 +109,9 @@ class SearchView extends StatelessWidget {
                   create: (_) => ProductsBloc(
                     
                      getProducts: GetProducts(
-                      ProductRepositoryImpl(SupabaseProductRemoteDatasource()),
+                      ProductRepositoryImpl(SupabaseProductRemoteDatasource(dio: sl<Dio>())),
                     ), getSearchProducts: GetSearchProducts(
-                      ProductRepositoryImpl(SupabaseProductRemoteDatasource()),
+                      ProductRepositoryImpl(SupabaseProductRemoteDatasource(dio: sl<Dio>())),
                     ),
                   )..add(FetchProductsEvent()),
                   child: BlocBuilder<ProductsBloc, ProductsState>(

@@ -10,6 +10,7 @@ class SignUpUseCase {
     required String password,
     required String name,
     required String surname,
+    required DateTime createdAt,
     String? phone,
   }) async {
     return await repository.signUp(
@@ -18,6 +19,7 @@ class SignUpUseCase {
       name: name,
       surname: surname,
       phone: phone,
+      createdAt: createdAt,
     );
   }
 }

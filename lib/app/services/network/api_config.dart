@@ -24,10 +24,11 @@ class ApiConfig {
   static const String favInfo = "fav_info";
   static const String basketInfo = "basket_info";
   static const headers = {
-    //'Authorization': 'Bearer $token',
     'Content-Type': 'application/json',
     'Accept': 'application/json',
-    'apikey':
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJoaHJybXFhcHRpYWNka2lwc3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI2NDU3MzgsImV4cCI6MjA2ODIyMTczOH0.nvxJ6zuF6zxw7I3O9bzBYqpIXg8Z3yV9SOrDqrDwrM0',
+    'apikey': "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJoaHJybXFhcHRpYWNka2lwc3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI2NDU3MzgsImV4cCI6MjA2ODIyMTczOH0.nvxJ6zuF6zxw7I3O9bzBYqpIXg8Z3yV9SOrDqrDwrM0"
   };
+
+  static const String apiKey =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJoaHJybXFhcHRpYWNka2lwc3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI2NDU3MzgsImV4cCI6MjA2ODIyMTczOH0.nvxJ6zuF6zxw7I3O9bzBYqpIXg8Z3yV9SOrDqrDwrM0";
 }

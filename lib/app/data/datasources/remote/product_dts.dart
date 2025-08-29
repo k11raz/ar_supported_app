@@ -1,9 +1,10 @@
-import 'dart:developer';
-import 'package:bus/app/data/datasources/remote/remote.dart';
-import 'package:bus/app/services/network/dio_client.dart';
+import 'package:dio/dio.dart';
+import '../../../app.dart';
 
 class SupabaseProductRemoteDatasource implements ProductRemoteDatasource {
-  final dio = DioClient.dio;
+  final Dio dio;
+
+  SupabaseProductRemoteDatasource({required this.dio});
 
   @override
   Future<List<Map<String, dynamic>>> getProducts({String? categoryId}) async {
@@ -13,7 +14,10 @@ class SupabaseProductRemoteDatasource implements ProductRemoteDatasource {
       queryParams['category_id'] = 'eq.$categoryId';
     }
 
-    final response = await dio.get('products', queryParameters: queryParams);
+    final response = await dio.get(
+      ApiConfig.baseUrl + ApiConfig.products,
+      queryParameters: queryParams,
+    );
     //log("Supabase Response: $response");
 
     return List<Map<String, dynamic>>.from(response.data);
@@ -21,12 +25,12 @@ class SupabaseProductRemoteDatasource implements ProductRemoteDatasource {
 
   @override
   Future<void> addProduct(Map<String, dynamic> data) async {
-    await dio.post('products', data: data);
+    await dio.post(ApiConfig.baseUrl + ApiConfig.products, data: data);
   }
 
   Future<Map<String, dynamic>?> getProductById(String id) async {
     final response = await dio.get(
-      'products',
+      ApiConfig.baseUrl + ApiConfig.products,
       queryParameters: {'id': 'eq.$id', 'select': '*'},
     );
     if (response.data.isEmpty) return null;
@@ -34,13 +38,16 @@ class SupabaseProductRemoteDatasource implements ProductRemoteDatasource {
   }
 
   Future<void> deleteProductById(int id) async {
-    await dio.delete('products', queryParameters: {'id': 'eq.$id'});
+    await dio.delete(
+      ApiConfig.baseUrl + ApiConfig.products,
+      queryParameters: {'id': 'eq.$id'},
+    );
   }
 
   @override
   Future<List<Map<String, dynamic>>> searchProduct({String? query}) async {
     final response = await dio.get(
-      'products',
+      ApiConfig.baseUrl + ApiConfig.products,
       queryParameters: {'name': 'ilike.%$query%'},
     );
 

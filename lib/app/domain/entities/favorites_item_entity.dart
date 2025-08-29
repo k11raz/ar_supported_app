@@ -5,13 +5,15 @@ class FavoritesItemEntity {
   final double price;
   final int stock;
   final String imageUrl;
+  final String productId;
 
   FavoritesItemEntity({
     required this.id,
-    required this.name, 
-    this.description, 
-    required this.price, 
-    required this.stock, 
-    required this.imageUrl, 
+    required this.name,
+    this.description,
+    required this.price,
+    required this.stock,
+    required this.imageUrl,
+    required this.productId,
   });
 }

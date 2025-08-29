@@ -23,16 +23,14 @@ class AddProductToCardEvent extends CardEvent {
 }
 
 class RemoveProductFromCardEvent extends CardEvent {
-  final ProductEntity product;
-  final int quantity;
+  final String id;
 
   const RemoveProductFromCardEvent({
-    required this.product,
-    this.quantity = -1,
+    required this.id,
   });
 
    @override
-  List<Object?> get props => [product, quantity];
+  List<Object?> get props => [id];
 }
 
 class FetchOrderItemsEvent extends CardEvent {}

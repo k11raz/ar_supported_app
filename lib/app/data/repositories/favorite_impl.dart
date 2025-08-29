@@ -11,13 +11,8 @@ class FavoritesRepositoryImpl implements FavoritesRepository {
   }
 
   @override
-  Future<void> deleteFavoriteById(int id) {
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> deleteFavorites() {
-    throw UnimplementedError();
+  Future<void> deleteFavorites({String? id}) async {
+    return await remoteDataSource.deleteFavorites(id: id);
   }
 
   @override
@@ -26,5 +21,10 @@ class FavoritesRepositoryImpl implements FavoritesRepository {
     return dataList
         .map((json) => FavoritesItemModel.fromJson(json).toEntity())
         .toList();
+  }
+
+  @override
+  Future<bool> checkIsFavorite({required String productId}) async {
+    return await remoteDataSource.checkIfFavorite(productId);
   }
 }

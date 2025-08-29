@@ -17,6 +17,7 @@ class CacheService implements ICacheService {
 
     final jsonString = prefs.getString(key);
     if (jsonString != null) {
+      if (T == String) return jsonString as T;
       log('Read result: $jsonString');
       return jsonDecode(jsonString) as T;
     }

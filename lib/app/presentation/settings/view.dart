@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:bus/app/app.dart';
 import 'package:flutter/material.dart';
 
 @RoutePage()
@@ -17,37 +18,10 @@ class SettingUserView extends StatelessWidget {
           onPressed: () {},
         ),
         title: Text(
-          'ZARA QR',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+          'GURAL QR',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: false,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16.0),
-            child: Row(
-              children: [
-                Text(
-                  'LTE',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
-                ),
-                SizedBox(width: 8),
-                Text(
-                  '73',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -55,17 +29,19 @@ class SettingUserView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildMenuItem('PURCHASES'),
-              _buildMenuItem('RETURNS'),
-              _buildMenuItem('NOTIFICATIONS [3]', hasNotification: true),
-              _buildMenuItem('PAYMENT METHODS'),
-              _buildMenuItem('PROFILE'),
-              _buildMenuItem('LOCATION | TURKEY'),
+              _buildMenuItem('PURCHASES', () {}),
+              _buildMenuItem('RETURNS', () {}),
+              _buildMenuItem('NOTIFICATIONS [3]', () {}, hasNotification: true),
+              _buildMenuItem('PROFILE', () {}),
+              _buildMenuItem('LOCATION | TURKEY', () {}),
               _buildSettingsMenuItem(),
               SizedBox(height: 32),
-              _buildMenuItem('FAVORITES'),
-              _buildMenuItem('STORES'),
-              _buildMenuItem('HELP'),
+              _buildMenuItem('FAVORITES', () {}),
+              _buildMenuItem('STORES', () {}),
+              _buildMenuItem('LOGOUT', () {
+                sl<UserCacheService>().removeToken();
+                context.router.push(HomeRoute());
+              }),
             ],
           ),
         ),
@@ -73,41 +49,45 @@ class SettingUserView extends StatelessWidget {
     );
   }
 
-  Widget _buildMenuItem(String title, {bool hasNotification = false}) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Text(
-                title,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              if (hasNotification)
-                Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
-                  child: Container(
-                    width: 8,
-                    height: 8,
-                    decoration: BoxDecoration(
-                      color: Colors.blue,
-                      shape: BoxShape.circle,
-                    ),
+  Widget _buildMenuItem(
+    String title,
+    VoidCallback onPressed, {
+    bool hasNotification = false,
+  }) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
                   ),
                 ),
-            ],
-          ),
-          Icon(
-            Icons.chevron_right,
-            color: Colors.white,
-          ),
-        ],
+                if (hasNotification)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+            Icon(Icons.chevron_right, color: Colors.white),
+          ],
+        ),
       ),
     );
   }
@@ -132,17 +112,11 @@ class SettingUserView extends StatelessWidget {
               SizedBox(height: 4),
               Text(
                 'New version of the App available',
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 12,
-                ),
+                style: TextStyle(color: Colors.grey, fontSize: 12),
               ),
             ],
           ),
-          Icon(
-            Icons.chevron_right,
-            color: Colors.white,
-          ),
+          Icon(Icons.chevron_right, color: Colors.white),
         ],
       ),
     );

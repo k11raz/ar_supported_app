@@ -1,4 +1,6 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:bus/app/domain/usecases/basket/remove_basket_usecase.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../app.dart';
@@ -17,7 +19,7 @@ class ProductDetailView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double totalImagesHeight = images.length * 200;
-    final cardRemoteDataSource = SupabaseCardRemoteDatasource();
+    final cardRemoteDataSource = SupabaseCardRemoteDatasource(dio: sl<Dio>());
     final cardRepository = CardRepositoryImpl(cardRemoteDataSource);
     final addToCartUseCase = AddToCartUseCase(cardRepository);
     final fetchOrders = GetOrderItems(cardRepository);
@@ -25,7 +27,13 @@ class ProductDetailView extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<ProductDetailBloc>(create: (_) => ProductDetailBloc()),
-        BlocProvider<CardBloc>(create: (_) => CardBloc(addToCartUseCase: addToCartUseCase, getOrderItems: fetchOrders)),
+        BlocProvider<CardBloc>(
+          create: (_) => CardBloc(
+            addToCartUseCase: addToCartUseCase,
+            getOrderItems: fetchOrders,
+            removeOrderItemUseCase: sl<RemoveOrderItemUseCase>()
+          ),
+        ),
       ],
 
       child: Builder(

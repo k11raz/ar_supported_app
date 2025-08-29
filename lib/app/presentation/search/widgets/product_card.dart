@@ -1,4 +1,7 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:bus/app/domain/usecases/favorites/check_favorite.dart';
+import 'package:bus/app/domain/usecases/favorites/remove_favorites_usecase.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -17,7 +20,9 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final favoritesRemoteDataSource = SupabaseFavoritesRemoteDataSource();
+    final favoritesRemoteDataSource = SupabaseFavoritesRemoteDataSource(
+      dio: sl<Dio>(),
+    );
     final favoritesRepositoryImpl = FavoritesRepositoryImpl(
       favoritesRemoteDataSource,
     );
@@ -75,18 +80,29 @@ class ProductCard extends StatelessWidget {
                 ),
               ),
               BlocProvider(
-                create: (context) =>
-                    FavoritesBloc(addToFavoritesUseCase: addToFavoritesUseCase, getFavorites: getFavorites),
+                create: (context) => FavoritesBloc(
+                  addToFavoritesUseCase: addToFavoritesUseCase,
+                  getFavorites: getFavorites,
+                  checkFavoriteUseCase: sl<CheckFavoriteUseCase>(),
+                  removeFavoritesUsecase: sl<RemoveFavoritesUsecase>()
+                ),
                 child: BlocBuilder<FavoritesBloc, FavoritesState>(
                   builder: (context, state) {
+                    final favorites = state is FavoritesLoaded
+                        ? state.favorites
+                        : [];
+                    final isFavorite = favorites.any((p) => p.productId == product.id);
+
                     return IconButton(
+                      icon: Icon(
+                        isFavorite ? Icons.favorite : Icons.favorite_border,
+                      ),
+                      color: Colors.white,
                       onPressed: () {
                         context.read<FavoritesBloc>().add(
-                          AddProductToFavoritesEvent(product: product),
+                          ToggleFavoritesEvent(product: product),
                         );
                       },
-                      icon: const Icon(Icons.favorite_border),
-                      color: Colors.white,
                     );
                   },
                 ),

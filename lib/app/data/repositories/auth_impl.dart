@@ -11,6 +11,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required String password,
     required String name,
     required String surname,
+    required DateTime createdAt,
     String? phone,
   }) async {
     final model = await remoteDataSource.signUp(
@@ -19,6 +20,7 @@ class AuthRepositoryImpl implements AuthRepository {
       name: name,
       surname: surname,
       phone: phone,
+      createdAt: createdAt
     );
 
     return model.toEntity();

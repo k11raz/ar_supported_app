@@ -23,6 +23,14 @@ class FavoritesLoaded extends FavoritesState {
   List<Object> get props => [favorites];
 }
 
+class FavoritesChecked extends FavoritesState {
+  final bool isFavorite;
+  const FavoritesChecked(this.isFavorite);
+
+  @override
+  List<Object> get props => [isFavorite];
+}
+
 class FavoritesFailure extends FavoritesState {
   final String message;
 

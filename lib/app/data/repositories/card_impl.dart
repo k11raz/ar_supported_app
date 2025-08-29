@@ -10,15 +10,12 @@ class CardRepositoryImpl implements CardRepository {
     required ProductEntity product,
     int quantity = 1,
   }) async {
-    return remote.addProductToCard(
-      product: product,
-      quantity: quantity,
-    );
+    return remote.addProductToCard(product: product, quantity: quantity);
   }
-  
+
   @override
-  void deleteProductItem(String id) {
-    
+  Future<void> deleteProductItem({String? id}) async {
+    return await remote.deleteProductItem(id: id);
   }
 
   @override

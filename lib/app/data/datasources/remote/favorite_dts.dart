@@ -1,15 +1,21 @@
 import 'dart:developer';
-import 'package:bus/app/data/data.dart';
-import 'package:bus/app/domain/entities/product_entity.dart';
 import 'package:dio/dio.dart';
+import '../../../app.dart';
 
 class SupabaseFavoritesRemoteDataSource implements FavoritesRemoteDataSource {
-  final dio = DioClient.dio;
+  final Dio dio;
+
+  SupabaseFavoritesRemoteDataSource({required this.dio});
 
   @override
   Future<void> addProductToFavorites({required ProductEntity product}) async {
     try {
-      await dio.post('favorites', data: {"product_id": product.id});
+      final userId = await sl<UserCacheService>().getUserId();
+
+      await dio.post(
+        ApiConfig.baseUrl + ApiConfig.favorites,
+        data: {"product_id": product.id, "user_id": userId},
+      );
     } catch (e) {
       if (e is DioException) {
         log('DioException: ${e.message}');
@@ -24,26 +30,60 @@ class SupabaseFavoritesRemoteDataSource implements FavoritesRemoteDataSource {
   }
 
   @override
-  Future<void> deleteFavoriteById(int id) {
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> deleteFavorites() {
-    throw UnimplementedError();
-  }
-
-  @override
   Future<List<Map<String, dynamic>>> fetchFavorites({String? id}) async {
+    final userId = await sl<UserCacheService>().getUserId();
     final queryParams = <String, dynamic>{};
 
     if (id != null) {
       queryParams['id'] = 'eq.$id';
     }
+    if (userId != null) {
+      queryParams['user_id'] = 'eq.$userId';
+    }
 
-    final response = await dio.get('fav_info', queryParameters: queryParams);
+    //log(queryParams.toString());
+
+    final response = await dio.get(
+      ApiConfig.baseUrl + ApiConfig.favInfo,
+      queryParameters: queryParams,
+    );
     //log("Supabase Favorites Response: $response");
 
     return List<Map<String, dynamic>>.from(response.data);
+  }
+
+  @override
+  Future<bool> checkIfFavorite(String productId) async {
+    final queryParams = <String, dynamic>{};
+
+    try {
+      queryParams['id'] = 'eq.$productId';
+
+      await dio.get(
+        ApiConfig.baseUrl + ApiConfig.favorites,
+        queryParameters: queryParams,
+      );
+      return true;
+    } catch (e) {
+      throw Exception(
+        "Favorites karşılaştırmalarında hata çıktı ${e.toString()}",
+      );
+    }
+  }
+
+  @override
+  Future<void> deleteFavorites({String? id}) async {
+    final queryParams = <String, dynamic>{};
+
+    try {
+      queryParams["product_id"] = 'eq.$id';
+
+      await dio.delete(
+        ApiConfig.baseUrl + ApiConfig.favorites,
+        queryParameters: queryParams,
+      );
+    } catch (e) {
+      throw Exception("Favori silme de hata oldu. $e");
+    }
   }
 }

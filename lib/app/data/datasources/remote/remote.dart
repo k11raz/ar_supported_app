@@ -21,6 +21,7 @@ abstract class AuthRemoteDataSource {
     required String password,
     required String name,
     required String surname,
+    required DateTime createdAt,
     String? phone,
   });
 
@@ -34,13 +35,14 @@ abstract class CardRemoteDataSource {
     required ProductEntity product,
     int quantity = 1,
   });
+  Future<void> deleteProductItem({String? id});
 
   Future<List<Map<String, dynamic>>> fetchBasketItems({String? orderId});
 }
 
 abstract class FavoritesRemoteDataSource {
   Future<List<Map<String, dynamic>>> fetchFavorites({String? id});
-  Future<void> deleteFavoriteById(int id);
-  Future<void> deleteFavorites();
+  Future<void> deleteFavorites({String? id});
   Future<void> addProductToFavorites({required ProductEntity product});
+  Future<bool> checkIfFavorite(String productId);
 }

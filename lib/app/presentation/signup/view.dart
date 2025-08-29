@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../app.dart';
@@ -10,7 +11,8 @@ class SignupView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // DataSource -> Repository -> UseCase -> Bloc
-    final authRemoteDataSource = SupabaseAuthRemoteDataSource(dio: DioClient.dio);
+    final authRemoteDataSource = SupabaseAuthRemoteDataSource(dio: sl<Dio>(), 
+    userCacheService: sl<UserCacheService>());
     final authRepository = AuthRepositoryImpl(authRemoteDataSource);
     final signUpUseCase = SignUpUseCase(authRepository);
 

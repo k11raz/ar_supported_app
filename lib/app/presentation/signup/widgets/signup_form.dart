@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
@@ -25,14 +26,38 @@ class SignUpForm extends StatelessWidget {
             builder: (_) => const Center(child: CircularProgressIndicator()),
           );
         } else {
+          Navigator.of(context, rootNavigator: true).pop();
           if (state is AuthSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Hoşgeldin ${state.user.name}')),
+            final snackBar = SnackBar(
+              elevation: 0,
+              behavior: SnackBarBehavior.floating,
+              backgroundColor: Colors.transparent,
+              content: AwesomeSnackbarContent(
+                title: 'Merhaba, ${state.user.name}',
+                message: ' Kaydınız başarıyla gerçekleşmiştir.',
+                contentType: ContentType.success,
+              ),
             );
+
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(snackBar);
+            context.router.push(HomeRoute());
           } else if (state is AuthFailure) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.message)));
+            final snackBar = SnackBar(
+              elevation: 0,
+              behavior: SnackBarBehavior.floating,
+              backgroundColor: Colors.transparent,
+              content: AwesomeSnackbarContent(
+                title: 'Bir Hata ile Karşılaşıldı',
+                message: ' Kaydınız başarıyla gerçekleşmiştir.',
+                contentType: ContentType.failure,
+              ),
+            );
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(snackBar);
+            Navigator.pop(context);
           }
         }
       },
@@ -108,10 +133,10 @@ class SignUpForm extends StatelessWidget {
                       name: firstNameController.text,
                       surname: lastNameController.text,
                       phone: phoneController.text,
+                      createdAt: DateTime.now(),
                     ),
                   );
                 }
-                context.router.push(HomeRoute());
               },
               primaryColor: Colors.black,
               secondaryColor: Colors.black,

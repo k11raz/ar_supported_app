@@ -22,7 +22,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         email: event.email,
         password: event.password,
       );
-    
 
       emit(LoginSuccess(user));
     } catch (e) {

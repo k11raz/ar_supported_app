@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -23,7 +24,7 @@ class MenuView extends StatelessWidget {
               child: BlocProvider(
                 create: (_) => CategoryBloc(
                   getCategory: GetCategory(
-                    CategoryRepositoryImpl(SupabaseCategoryRemoteDatasource()),
+                    CategoryRepositoryImpl(SupabaseCategoryRemoteDatasource(dio: sl<Dio>())),
                   ),
                 )..add(FetchCategoryEvent()),
                 child: BlocBuilder<CategoryBloc, CategoryState>(
@@ -92,7 +93,7 @@ class MenuView extends StatelessWidget {
               child: BlocProvider(
                 create: (_) => CategoryBloc(
                   getCategory: GetCategory(
-                    CategoryRepositoryImpl(SupabaseCategoryRemoteDatasource()),
+                    CategoryRepositoryImpl(SupabaseCategoryRemoteDatasource(dio: sl<Dio>())),
                   ),
                 )..add(FetchCategoryEvent()),
                 child: BlocBuilder<CategoryBloc, CategoryState>(

@@ -2,22 +2,49 @@ import 'dart:developer';
 
 import 'package:bus/app/domain/entities/favorites_entity.dart';
 import 'package:bus/app/domain/usecases/favorites/add_to_favorites.dart';
+import 'package:bus/app/domain/usecases/favorites/check_favorite.dart';
 import 'package:bus/app/domain/usecases/favorites/get_favorites.dart';
+import 'package:bus/app/domain/usecases/favorites/remove_favorites_usecase.dart';
 import 'package:bus/app/presentation/favorites/event.dart';
 import 'package:bus/app/presentation/favorites/state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:uuid/uuid.dart';
 
 class FavoritesBloc extends Bloc<FavoritesEvent, FavoritesState> {
   AddToFavoritesUseCase addToFavoritesUseCase;
   GetFavorites getFavorites;
-  FavoritesBloc({required this.addToFavoritesUseCase,required this.getFavorites})
-    : super(FavoritesInitial()) {
+  CheckFavoriteUseCase checkFavoriteUseCase;
+  RemoveFavoritesUsecase removeFavoritesUsecase;
+
+  FavoritesBloc({
+    required this.addToFavoritesUseCase,
+    required this.getFavorites,
+    required this.checkFavoriteUseCase,
+    required this.removeFavoritesUsecase,
+  }) : super(FavoritesInitial()) {
     on<AddProductToFavoritesEvent>(_onAddProduct);
     on<FetchFavoritesEvent>(_onLoadFavoritesItems);
+    on<CheckFavoritesEvent>(checkFavorites);
+    on<ToggleFavoritesEvent>(toggleFavorite);
+    on<RemoveFavoritesEvent>(removeFavorite);
   }
 
-  final orderId = Uuid().v4();
+  Future<void> removeFavorite(
+    RemoveFavoritesEvent event,
+    Emitter<FavoritesState> emit,
+  ) async {
+    emit(FavoritesLoading());
+
+     try {
+    await removeFavoritesUsecase(id: event.id);
+
+    final updatedFavorites = await getFavorites();
+    emit(FavoritesLoaded(updatedFavorites));
+  } catch (e) {
+    emit(FavoritesFailure(e.toString()));
+  }
+
+
+  }
 
   Future<void> _onAddProduct(
     AddProductToFavoritesEvent event,
@@ -68,6 +95,45 @@ class FavoritesBloc extends Bloc<FavoritesEvent, FavoritesState> {
     } catch (e, s) {
       log('FetchProductsEvent error: $e', stackTrace: s);
       emit(FavoritesFailure('Favori Ürünler yüklenemedi.'));
+    }
+  }
+
+  Future<void> checkFavorites(
+    CheckFavoritesEvent event,
+    Emitter<FavoritesState> emit,
+  ) async {
+    emit(FavoritesLoading());
+    try {
+      final isFavorite = await checkFavoriteUseCase(event.productId);
+      emit(FavoritesChecked(isFavorite));
+    } catch (e) {
+      log('FetchProductsEvent error: $e');
+      emit(FavoritesFailure('Favori Ürünler yüklenemedi.'));
+    }
+  }
+
+  Future<void> toggleFavorite(
+    ToggleFavoritesEvent event,
+    Emitter<FavoritesState> emit,
+  ) async {
+    emit(FavoritesLoading());
+    try {
+      final favorites = await getFavorites();
+
+      final isFavorite = favorites.any(
+        (item) => item.productId == event.product.id,
+      );
+
+      if (isFavorite) {
+        await removeFavoritesUsecase(id: event.product.id);
+      } else {
+        await addToFavoritesUseCase(product: event.product);
+      }
+
+      final updatedFavorites = await getFavorites();
+      emit(FavoritesLoaded(updatedFavorites));
+    } catch (e) {
+      emit(FavoritesFailure(e.toString()));
     }
   }
 }

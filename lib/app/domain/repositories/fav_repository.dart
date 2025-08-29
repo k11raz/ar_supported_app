@@ -1,11 +1,8 @@
-import 'package:bus/app/domain/entities/favorites_item_entity.dart';
-import 'package:bus/app/domain/entities/product_entity.dart';
+import '../../app.dart';
 
 abstract class FavoritesRepository {
   Future<List<FavoritesItemEntity>> fetchFavorites({String? id});
-  Future<void> deleteFavoriteById(int id);
-  Future<void> deleteFavorites();
-   Future<void> addProductToFavorites({
-    required ProductEntity product,
-  });
+  Future<void> deleteFavorites({String? id});
+  Future<void> addProductToFavorites({required ProductEntity product});
+  Future<bool> checkIsFavorite({required String productId});
 }

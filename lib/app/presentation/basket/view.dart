@@ -1,7 +1,8 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:bus/app/domain/usecases/basket/remove_basket_usecase.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:iconsax/iconsax.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import '../../app.dart';
 
 @RoutePage()
@@ -10,15 +11,13 @@ class BasketView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cardRemoteDataSource = SupabaseCardRemoteDatasource();
-    final cardRepository = CardRepositoryImpl(cardRemoteDataSource);
-    final addToCartUseCase = AddToCartUseCase(cardRepository);
-    final getOrderItemsUseCase = GetOrderItems(cardRepository);
 
     return BlocProvider(
-      create: (_) =>
-          CardBloc(addToCartUseCase: addToCartUseCase, getOrderItems: getOrderItemsUseCase)
-            ..add(FetchOrderItemsEvent()),
+      create: (_) => CardBloc(
+        addToCartUseCase: sl<AddToCartUseCase>(),
+        getOrderItems: sl<GetOrderItems>(),
+        removeOrderItemUseCase: sl<RemoveOrderItemUseCase>(),
+      )..add(FetchOrderItemsEvent()),
       child: BlocConsumer<CardBloc, CardState>(
         listener: (context, state) {
           if (state is CardFailure) {
@@ -49,15 +48,90 @@ class BasketView extends StatelessWidget {
                         itemCount: state.orders.length,
                         itemBuilder: (context, index) {
                           final item = state.orders[index];
-                          return ListTile(
-                            leading: item.orderId != null
-                                ? Image.network(item.imageUrl)
-                                : const Icon(Icons.shopping_bag_outlined),
-                            title: Text(item.name),
-                            subtitle: Text("${item.price} TL"),
-                            trailing: IconButton(
-                              icon: const Icon(Iconsax.trash),
-                              onPressed: () {},
+                          return Slidable(
+                            key: ValueKey(item.orderId),
+                            endActionPane: ActionPane(
+                              motion: const DrawerMotion(),
+                              extentRatio: 0.20,
+                              children: [
+                                SlidableAction(
+                                  onPressed: (context) {
+                                    context.read<CardBloc>().add(
+                                      RemoveProductFromCardEvent(
+                                        id: item.orderItemId,
+                                      ),
+                                    );
+                                  },
+                                  backgroundColor: Colors.red,
+                                  foregroundColor: Colors.white,
+                                  icon: Icons.delete,
+                                  label: 'Sil',
+                                ),
+                              ],
+                            ),
+                            child: Container(
+                              height: 120,
+                              decoration: BoxDecoration(
+                                color: NColors.black,
+                                borderRadius: BorderRadius.circular(4),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.05),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: ClipRRect(
+                                      borderRadius: const BorderRadius.only(
+                                        topLeft: Radius.circular(4),
+                                        bottomLeft: Radius.circular(4),
+                                      ),
+                                      child: Image.network(
+                                        item.imageUrl,
+                                        fit: BoxFit.fill,
+                                        width: double.infinity,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    flex: 2,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          item.name,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .titleMedium
+                                              ?.copyWith(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        const SizedBox(height: 6),
+                                        Text(
+                                          "${item.price} TL",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium
+                                              ?.copyWith(
+                                                color: Colors.grey[700],
+                                              ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           );
                         },

@@ -6,8 +6,9 @@ import 'app.dart';
 final _appRouter = AppRouter();
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
   await init();
+  WidgetsFlutterBinding.ensureInitialized();
+  //sl<UserCacheService>().removeToken();
   Bloc.observer = const SimpleBlocObserver();
   runApp(
     MaterialApp.router(

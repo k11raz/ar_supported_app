@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:bus/app/app.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -15,10 +16,10 @@ class ProductCategoryView extends StatelessWidget {
       body: BlocProvider(
         create: (_) => ProductsBloc(
           getProducts: GetProducts(
-            ProductRepositoryImpl(SupabaseProductRemoteDatasource()),
+            ProductRepositoryImpl(SupabaseProductRemoteDatasource(dio: sl<Dio>())),
           ),
           getSearchProducts: GetSearchProducts(
-            ProductRepositoryImpl(SupabaseProductRemoteDatasource()),
+            ProductRepositoryImpl(SupabaseProductRemoteDatasource(dio: sl<Dio>())),
           ),
         )..add(FetchProductsByCategoryEvent(category.id)),
         child: CustomScrollView(
