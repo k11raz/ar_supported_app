@@ -25,7 +25,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
       final products = await getSearchProducts(event.query);
       emit(ProductsLoaded(products));
     } catch (e, s) {
-      log('FetchProductsEvent error: $e', stackTrace: s);
+      log('FetchProductsSearchEvent error: $e', stackTrace: s);
       emit(ProductsError('Ürünler yüklenemedi.'));
     }
   }

@@ -23,6 +23,8 @@ class ApiConfig {
   static const String categories = "categories";
   static const String favInfo = "fav_info";
   static const String basketInfo = "basket_info";
+  static const String reviews = "reviews";
+  static const String reviewInfo = "review_info";
   static const headers = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',

@@ -93,7 +93,7 @@ class FavoritesBloc extends Bloc<FavoritesEvent, FavoritesState> {
       final data = await getFavorites();
       emit(FavoritesLoaded(data));
     } catch (e, s) {
-      log('FetchProductsEvent error: $e', stackTrace: s);
+      log('FetchFavoriteEvent error: $e', stackTrace: s);
       emit(FavoritesFailure('Favori Ürünler yüklenemedi.'));
     }
   }
@@ -107,7 +107,7 @@ class FavoritesBloc extends Bloc<FavoritesEvent, FavoritesState> {
       final isFavorite = await checkFavoriteUseCase(event.productId);
       emit(FavoritesChecked(isFavorite));
     } catch (e) {
-      log('FetchProductsEvent error: $e');
+      log('FetchFavoriteEvent error: $e');
       emit(FavoritesFailure('Favori Ürünler yüklenemedi.'));
     }
   }

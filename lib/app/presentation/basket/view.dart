@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:bus/app/domain/usecases/basket/remove_basket_usecase.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -11,13 +10,8 @@ class BasketView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    return BlocProvider(
-      create: (_) => CardBloc(
-        addToCartUseCase: sl<AddToCartUseCase>(),
-        getOrderItems: sl<GetOrderItems>(),
-        removeOrderItemUseCase: sl<RemoveOrderItemUseCase>(),
-      )..add(FetchOrderItemsEvent()),
+    return BlocProvider.value(
+      value: sl<CardBloc>()..add(FetchOrderItemsEvent()),
       child: BlocConsumer<CardBloc, CardState>(
         listener: (context, state) {
           if (state is CardFailure) {
@@ -25,10 +19,8 @@ class BasketView extends StatelessWidget {
               context,
             ).showSnackBar(SnackBar(content: Text(state.message.toString())));
           }
-          if (state is CardSuccess) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(const SnackBar(content: Text("Sepet güncellendi")));
+          if (state is CardLoaded) {
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Sepet güncellendi")));
           }
         },
         builder: (context, state) {
@@ -41,8 +33,7 @@ class BasketView extends StatelessWidget {
                 children: [
                   if (state is CardLoading) ...[
                     const Center(child: CircularProgressIndicator()),
-                  ] else if (state is CardLoaded &&
-                      state.orders.isNotEmpty) ...[
+                  ] else if (state is CardLoaded && state.orders.isNotEmpty) ...[
                     Expanded(
                       child: ListView.builder(
                         itemCount: state.orders.length,
@@ -101,10 +92,8 @@ class BasketView extends StatelessWidget {
                                   Expanded(
                                     flex: 2,
                                     child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Text(
                                           item.name,
@@ -151,7 +140,6 @@ class BasketView extends StatelessWidget {
                       ),
                     ),
                   ],
-
                   const SizedBox(height: 32),
                 ],
               ),

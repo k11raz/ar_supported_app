@@ -47,7 +47,7 @@ class CustomButton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
-          children: [
+          children:  [
             if (isLoading) ...[
               const SizedBox(
                 width: 20,

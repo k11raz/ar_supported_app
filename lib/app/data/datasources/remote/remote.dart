@@ -46,3 +46,12 @@ abstract class FavoritesRemoteDataSource {
   Future<void> addProductToFavorites({required ProductEntity product});
   Future<bool> checkIfFavorite(String productId);
 }
+
+abstract class ReviewRemoteDataSource {
+  Future<List<Map<String,dynamic>>> fetchReviews({required String productId});
+  Future<void> deleteReview({required String reviewId});
+  Future<void> addReviewToProduct({
+    required String productId,
+    required ReviewEntity review,
+  });
+}

@@ -11,21 +11,22 @@ class SearchView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final searchController = TextEditingController();
+
     return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 48),
+        child: CustomScrollView(
+          slivers: [
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 48),
+            ),
 
-              SizedBox(
-                height: 24,
+            SliverToBoxAdapter(
+              child: SizedBox(
+                height: 100,
                 child: BlocProvider(
                   create: (_) => CategoryBloc(
-                     getCategory: GetCategory(
+                    getCategory: GetCategory(
                       CategoryRepositoryImpl(
                         SupabaseCategoryRemoteDatasource(dio: sl<Dio>()),
                       ),
@@ -62,6 +63,7 @@ class SearchView extends StatelessWidget {
 
                         return ListView.builder(
                           scrollDirection: Axis.horizontal,
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
                           itemCount: state.categories.length,
                           itemBuilder: (context, index) {
                             final category = state.categories[index];
@@ -75,87 +77,117 @@ class SearchView extends StatelessWidget {
                   ),
                 ),
               ),
+            ),
 
-              const SizedBox(height: 48),
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 24),
+            ),
 
-              BlocProvider<ProductsBloc>(
-                create: (_) => ProductsBloc(
-                  getProducts: GetProducts(
-                    ProductRepositoryImpl(SupabaseProductRemoteDatasource(dio: sl<Dio>())),
-                  ), getSearchProducts: GetSearchProducts(
-                    ProductRepositoryImpl(SupabaseProductRemoteDatasource(dio: sl<Dio>())),
-                  ),
-                )..add(FetchProductsEvent()),
-                child: BlocBuilder<ProductsBloc, ProductsState>(
-                  builder: (context, state) {
-                    return NSearchContainer(
-                      controller: searchController,
-                      onChanged: (value) {
-                        context.read<ProductsBloc>().add(
-                          SearchProductEvent(value),
-                        );
-                      },
-                    );
-                  },
-                ),
-              ),
-
-              const SizedBox(height: 48),
-              const Divider(color: Colors.white24),
-              const SizedBox(height: 48),
-
-              Expanded(
+            // Arama Çubuğu
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: BlocProvider(
                   create: (_) => ProductsBloc(
-                    
-                     getProducts: GetProducts(
-                      ProductRepositoryImpl(SupabaseProductRemoteDatasource(dio: sl<Dio>())),
-                    ), getSearchProducts: GetSearchProducts(
-                      ProductRepositoryImpl(SupabaseProductRemoteDatasource(dio: sl<Dio>())),
+                    getProducts: GetProducts(
+                      ProductRepositoryImpl(
+                        SupabaseProductRemoteDatasource(dio: sl<Dio>()),
+                      ),
+                    ),
+                    getSearchProducts: GetSearchProducts(
+                      ProductRepositoryImpl(
+                        SupabaseProductRemoteDatasource(dio: sl<Dio>()),
+                      ),
                     ),
                   )..add(FetchProductsEvent()),
                   child: BlocBuilder<ProductsBloc, ProductsState>(
                     builder: (context, state) {
-                      if (state is ProductsLoading) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-
-                      if (state is ProductsError) {
-                        return Center(
-                          child: Text(
-                            "Hata: ${state.message}",
-                            style: const TextStyle(color: Colors.red),
-                          ),
-                        );
-                      }
-
-                      if (state is ProductsLoaded) {
-                        if (state.products.isEmpty) {
-                          return const Center(
-                            child: Text(
-                              "Henüz Ürün yok",
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.white,
-                              ),
-                            ),
+                      return NSearchContainer(
+                        controller: searchController,
+                        onChanged: (value) {
+                          context.read<ProductsBloc>().add(
+                            SearchProductEvent(value),
                           );
-                        }
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ),
 
-                        return GridView.builder(
-                          padding: EdgeInsets.zero,
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 16.0,
-                                mainAxisSpacing: 16.0,
-                                childAspectRatio: 0.56,
-                              ),
-                          itemCount: state.products.length,
-                          itemBuilder: (context, index) {
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 48),
+            ),
+
+            const SliverToBoxAdapter(
+              child: Divider(color: Colors.white24),
+            ),
+
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 48),
+            ),
+
+            BlocProvider(
+              create: (_) => ProductsBloc(
+                getProducts: GetProducts(
+                  ProductRepositoryImpl(
+                    SupabaseProductRemoteDatasource(dio: sl<Dio>()),
+                  ),
+                ),
+                getSearchProducts: GetSearchProducts(
+                  ProductRepositoryImpl(
+                    SupabaseProductRemoteDatasource(dio: sl<Dio>()),
+                  ),
+                ),
+              )..add(FetchProductsEvent()),
+              child: BlocBuilder<ProductsBloc, ProductsState>(
+                builder: (context, state) {
+                  if (state is ProductsLoading) {
+                    return const SliverFillRemaining(
+                      child: Center(child: CircularProgressIndicator()),
+                    );
+                  }
+
+                  if (state is ProductsError) {
+                    return SliverFillRemaining(
+                      child: Center(
+                        child: Text(
+                          "Hata: ${state.message}",
+                          style: const TextStyle(color: Colors.red),
+                        ),
+                      ),
+                    );
+                  }
+
+                  if (state is ProductsLoaded) {
+                    if (state.products.isEmpty) {
+                      return const SliverFillRemaining(
+                        child: Center(
+                          child: Text(
+                            "Henüz Ürün yok",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+
+                    return SliverPadding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      sliver: SliverGrid(
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 16,
+                          crossAxisSpacing: 16,
+                          childAspectRatio: 0.56,
+                        ),
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
                             final product = state.products[index];
-
                             return ProductCard(
                               product: product,
                               imagePath: product.imageUrl,
@@ -166,16 +198,17 @@ class SearchView extends StatelessWidget {
                               ],
                             );
                           },
-                        );
-                      }
+                          childCount: state.products.length,
+                        ),
+                      ),
+                    );
+                  }
 
-                      return const SizedBox.shrink();
-                    },
-                  ),
-                ),
+                  return const SliverToBoxAdapter(child: SizedBox.shrink());
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

@@ -6,6 +6,7 @@ export 'datasources/remote/auth_dts.dart';
 export 'datasources/remote/card_dts.dart';
 export 'datasources/remote/favorite_dts.dart';
 export 'datasources/local/local.dart';
+export 'datasources/remote/review_dts.dart';
 
 export 'models/category_model.dart';
 export 'models/product_model.dart';
@@ -14,6 +15,8 @@ export 'models/basket_item_model.dart';
 export 'models/favorites_model.dart';
 export 'models/favorites_item_model.dart';
 export 'models/order_item_model.dart';
+export 'models/review_item_entity.dart';
+export 'models/review_model.dart';
 
 export '../services/network/dio_client.dart';
 export '../services/cache/cache_service.dart';
@@ -27,3 +30,4 @@ export 'repositories/auth_impl.dart';
 export 'repositories/card_impl.dart';
 export 'repositories/product_impl.dart';
 export 'repositories/user_impl.dart';
+export 'repositories/review_impl.dart';

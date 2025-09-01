@@ -6,13 +6,17 @@ class BasketItemModel {
   final String name;
   final String imageUrl;
   final double price;
+  final int quantity;
+  final double priceAtTime;
 
-  BasketItemModel({
+  BasketItemModel(  {
     required this.orderId,
     required this.orderItemId,
     required this.name,
     required this.imageUrl,
     required this.price,
+    required this.quantity,
+    required this.priceAtTime,
   });
 
   factory BasketItemModel.fromJson(Map<String, dynamic> json) {
@@ -22,17 +26,20 @@ class BasketItemModel {
       name: json['name'],
       imageUrl: json['image_url'],
       price: double.parse(json['price'].toString()),
+      quantity: int.parse(json['quantity'].toString()),
+      priceAtTime: double.parse(json['price_at_time'].toString()),
     );
   }
 
   BasketItemEntity toEntity() {
     return BasketItemEntity(
-      orderId: orderId, 
-      orderItemId: orderItemId, 
-      name: name, 
-      imageUrl: imageUrl, 
-      price: price
-      
+      orderId: orderId,
+      orderItemId: orderItemId,
+      name: name,
+      imageUrl: imageUrl,
+      price: price,
+      priceAtTime: priceAtTime,
+      quantity: quantity,
     );
   }
 }

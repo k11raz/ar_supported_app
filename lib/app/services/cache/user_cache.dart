@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:bus/app/app.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
@@ -52,6 +53,7 @@ class UserCacheService {
     if (token == null) return null;
 
     final decoded = JwtDecoder.decode(token);
+    log(decoded['sub']);
     return decoded['sub'];
   }
 

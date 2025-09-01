@@ -1,6 +1,5 @@
-import 'package:bus/app/domain/entities/basket_item_entity.dart';
-import 'package:bus/app/domain/entities/order_items_entity.dart';
 import 'package:equatable/equatable.dart';
+import '../../../app.dart';
 
 abstract class CardState extends Equatable {
   const CardState();
@@ -16,26 +15,17 @@ class CardLoading extends CardState {
   List<Object> get props => [];
 }
 
-class CardSuccess extends CardState {
-  final List<OrderItemsEntity> items;
+class CardLoaded extends CardState {
+  final List<BasketItemEntity> orders;
   final int totalItems;
   final double totalAmount;
 
-  CardSuccess({this.items = const []})
-      : totalItems = items.fold(0, (sum, i) => sum + i.quantity),
-        totalAmount =
-            items.fold(0, (sum, i) => sum + (i.priceAtTime * i.quantity));
+  CardLoaded({required this.orders})
+      : totalItems = orders.fold(0, (sum, i) => sum + i.quantity),
+        totalAmount = orders.fold(0.0, (sum, i) => sum + (i.priceAtTime * i.quantity));
 
   @override
-  List<Object?> get props => [items, totalItems, totalAmount];
-}
-
-class CardLoaded extends CardState {
-  final List<BasketItemEntity> orders;
-  const CardLoaded(this.orders);
-
-  @override
-  List<Object> get props => [orders];
+  List<Object> get props => [orders, totalItems, totalAmount];
 }
 
 class CardFailure extends CardState {

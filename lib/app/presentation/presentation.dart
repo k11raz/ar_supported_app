@@ -35,6 +35,9 @@ export 'product_detail/view.dart';
 export 'product_detail/widgets/bloc.dart';
 export 'product_detail/widgets/event.dart';
 export 'product_detail/widgets/state.dart';
+export 'product_detail/review/event.dart';
+export 'product_detail/review/state.dart';
+export 'product_detail/review/bloc.dart';
 
 export 'profile/bloc.dart';
 export 'profile/state.dart';

@@ -1,7 +1,4 @@
 import 'package:bus/app/app.dart';
-import 'package:bus/app/domain/usecases/basket/remove_basket_usecase.dart';
-import 'package:bus/app/domain/usecases/favorites/check_favorite.dart';
-import 'package:bus/app/domain/usecases/favorites/remove_favorites_usecase.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 
@@ -97,5 +94,21 @@ Future<void> init() async {
     ..registerLazySingleton<CardRepository>(() => CardRepositoryImpl(sl()))
     ..registerLazySingleton<CardRemoteDataSource>(
       () => SupabaseCardRemoteDatasource(dio: sl()),
+    );
+
+  sl
+    ..registerFactory(
+      () => ReviewBloc(
+        addReviewUseCase: sl(),
+        fetchReviewUseCase: sl(),
+        deleteReviewUseCase: sl(),
+      ),
+    )
+    ..registerLazySingleton(() => AddReviewUseCase(sl()))
+    ..registerLazySingleton(() => DeleteReviewUseCase(sl()))
+    ..registerLazySingleton(() => FetchReviewUseCase(sl()))
+    ..registerLazySingleton<ReviewRepository>(() => ReviewRepositoryImpl(sl()))
+    ..registerLazySingleton<ReviewRemoteDataSource>(
+      () => SupabaseReviewRemoteDataSource(dio: sl()),
     );
 }

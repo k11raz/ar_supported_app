@@ -1,8 +1,7 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:bus/app/domain/usecases/basket/remove_basket_usecase.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:iconsax/iconsax.dart';
 import '../../app.dart';
 
 @RoutePage()
@@ -19,20 +18,25 @@ class ProductDetailView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double totalImagesHeight = images.length * 200;
-    final cardRemoteDataSource = SupabaseCardRemoteDatasource(dio: sl<Dio>());
-    final cardRepository = CardRepositoryImpl(cardRemoteDataSource);
-    final addToCartUseCase = AddToCartUseCase(cardRepository);
-    final fetchOrders = GetOrderItems(cardRepository);
+    final formKey = GlobalKey<FormState>();
+    final reviewController = TextEditingController();
 
     return MultiBlocProvider(
       providers: [
         BlocProvider<ProductDetailBloc>(create: (_) => ProductDetailBloc()),
         BlocProvider<CardBloc>(
           create: (_) => CardBloc(
-            addToCartUseCase: addToCartUseCase,
-            getOrderItems: fetchOrders,
-            removeOrderItemUseCase: sl<RemoveOrderItemUseCase>()
+            addToCartUseCase: sl<AddToCartUseCase>(),
+            getOrderItems: sl<GetOrderItems>(),
+            removeOrderItemUseCase: sl<RemoveOrderItemUseCase>(),
           ),
+        ),
+        BlocProvider(
+          create: (_) => ReviewBloc(
+            addReviewUseCase: sl<AddReviewUseCase>(),
+            fetchReviewUseCase: sl<FetchReviewUseCase>(),
+            deleteReviewUseCase: sl<DeleteReviewUseCase>(),
+          )..add(FetchReviewEvent(productId: product.id)),
         ),
       ],
 
@@ -201,18 +205,224 @@ class ProductDetailView extends StatelessWidget {
                                 ),
                                 ExpansionTile(
                                   tilePadding: EdgeInsets.zero,
-                                  title: const Text(
+                                  title: Text(
                                     'ÜRÜN YORUMLARI',
                                     style: TextStyle(
                                       fontWeight: FontWeight.normal,
                                     ),
                                   ),
                                   children: <Widget>[
-                                    ListTile(
-                                      title: Text("${product.stock} ADET"),
+                                    BlocBuilder<ReviewBloc, ReviewState>(
+                                      builder: (context, state) {
+                                        return Column(
+                                          children: [
+                                            Form(
+                                              key: formKey,
+                                              child: Row(
+                                                children: [
+                                                  Expanded(
+                                                    flex: 3,
+                                                    child: CustomTextFormField(
+                                                      hintText:
+                                                          "Yorumunuzu yazın",
+                                                      controller:
+                                                          reviewController,
+                                                      suffixIcon: const Icon(
+                                                        Iconsax.direct,
+                                                      ),
+                                                      prefixIcon: const Icon(
+                                                        Iconsax.direct_right,
+                                                      ),
+                                                      validator: (value) =>
+                                                          value != null &&
+                                                              value.isNotEmpty
+                                                          ? null
+                                                          : 'Geçerli bir yorum girin.',
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 8),
+                                                  CustomButton(
+                                                    text: "Gönder",
+                                                    onPressed: () {
+                                                      if (formKey.currentState!
+                                                          .validate()) {
+                                                        context.read<ReviewBloc>().add(
+                                                          AddReviewToProductEvent(
+                                                            productId:
+                                                                product.id,
+                                                            review: ReviewEntity(
+                                                              id: '',
+                                                              productId:
+                                                                  product.id,
+                                                              comment:
+                                                                  reviewController
+                                                                      .text,
+                                                              rating: 5,
+                                                              userId:
+                                                                  sl<
+                                                                        UserCacheService
+                                                                      >()
+                                                                      .getUserId()
+                                                                      .toString(),
+                                                              createdAt:
+                                                                  DateTime.now(),
+                                                            ),
+                                                          ),
+                                                        );
+                                                        reviewController
+                                                            .clear();
+                                                      }
+                                                    },
+                                                    primaryColor: Colors.black,
+                                                    secondaryColor:
+                                                        Colors.white,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            const SizedBox(height: 16),
+
+                                            if (state is ReviewsLoading) ...[
+                                              const Center(
+                                                child:
+                                                    CircularProgressIndicator(),
+                                              ),
+                                            ] else if (state is ReviewsLoaded &&
+                                                state.reviews.isNotEmpty) ...[
+                                              ListView.builder(
+                                                shrinkWrap: true,
+                                                physics:
+                                                    const NeverScrollableScrollPhysics(),
+                                                itemCount: state.reviews.length,
+                                                itemBuilder: (context, index) {
+                                                  final item =
+                                                      state.reviews[index];
+                                                  return SizedBox(
+                                                    width: double.infinity,
+                                                    child: Card(
+                                                      elevation: 2,
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              16,
+                                                            ),
+                                                      ),
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets.all(
+                                                              12.0,
+                                                            ),
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Row(
+                                                              children: [
+                                                                CircleAvatar(
+                                                                  radius: 22,
+                                                                  backgroundColor:
+                                                                      Colors
+                                                                          .blue,
+                                                                  child: const Icon(
+                                                                    Icons
+                                                                        .verified_user,
+                                                                    color: Colors
+                                                                        .white,
+                                                                  ),
+                                                                ),
+                                                                const SizedBox(
+                                                                  width: 12,
+                                                                ),
+                                                                Expanded(
+                                                                  child: Text(
+                                                                    "${item.name} ${item.surname}",
+                                                                    style: const TextStyle(
+                                                                      fontSize:
+                                                                          16,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w600,
+                                                                    ),
+                                                                  ),
+                                                                ),
+
+                                                                  IconButton(
+                                                                    onPressed: () {
+                                                                      context
+                                                                          .read<
+                                                                            ReviewBloc
+                                                                          >()
+                                                                          .add(
+                                                                            RemoveReviewEvent(
+                                                                              reviewId: item.reviewId,
+                                                                            ),
+                                                                          );
+                                                                    },
+                                                                    icon: const Icon(
+                                                                      Icons
+                                                                          .delete,
+                                                                      color: Colors
+                                                                          .red,
+                                                                    ),
+                                                                  ),
+                                                              ],
+                                                            ),
+
+                                                            const SizedBox(
+                                                              height: 12,
+                                                            ),
+
+                                                            /// Yorum
+                                                            Text(
+                                                              item.comment,
+                                                              style:
+                                                                  const TextStyle(
+                                                                    fontSize:
+                                                                        14,
+                                                                    color: Colors
+                                                                        .black87,
+                                                                  ),
+                                                            ),
+
+                                                            const SizedBox(
+                                                              height: 8,
+                                                            ),
+
+                                                            /// Tarih
+                                                            Align(
+                                                              alignment: Alignment
+                                                                  .centerRight,
+                                                              child: Text(
+                                                                item.createdAt
+                                                                    .toIso8601String(),
+                                                                style: const TextStyle(
+                                                                  fontSize: 12,
+                                                                  color: Colors
+                                                                      .grey,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                            ] else ...[
+                                              const Padding(
+                                                padding: EdgeInsets.all(16),
+                                                child: Text("Henüz yorum yok."),
+                                              ),
+                                            ],
+                                          ],
+                                        );
+                                      },
                                     ),
                                   ],
                                 ),
+
                                 const SizedBox(height: 24),
                                 const Divider(),
                                 const SizedBox(height: 16),

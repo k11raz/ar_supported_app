@@ -1,6 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:bus/app/domain/usecases/favorites/check_favorite.dart';
-import 'package:bus/app/domain/usecases/favorites/remove_favorites_usecase.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

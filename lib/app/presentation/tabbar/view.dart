@@ -12,7 +12,9 @@ class MainTabView extends StatelessWidget {
       routes: const [BasketRoute(), FavoritesRoute()],
       builder: (context, child, tabController) {
         return Scaffold(
-          appBar: AppBar(leading: const AutoLeadingButton()),
+          appBar: IAppBar(
+            showBackArrow: false,
+          ),
           body: Column(
             children: [
               TabBar(
