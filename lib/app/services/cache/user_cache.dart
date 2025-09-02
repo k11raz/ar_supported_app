@@ -6,6 +6,7 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 class UserCacheService {
   static const userKey = 'userToken';
   static const accessTokenKey = 'access_token';
+  static const refreshTokenKey = 'refresh_token';
   final ICacheService cache;
 
   UserCacheService(this.cache);
@@ -67,6 +68,25 @@ class UserCacheService {
 
   Future<void> removeUser() async {
     await cache.remove(userKey);
+    await removeTokens();
+  }
+
+  // AI
+
+  Future<void> saveTokens({
+    required String accessToken,
+    required String refreshToken,
+  }) async {
+    await cache.write(accessTokenKey, accessToken);
+    await cache.write(refreshTokenKey, refreshToken);
+  }
+
+  Future<String?> getRefreshToken() async {
+    return await cache.read(refreshTokenKey);
+  }
+
+  Future<void> removeTokens() async {
     await cache.remove(accessTokenKey);
+    await cache.remove(refreshTokenKey);
   }
 }

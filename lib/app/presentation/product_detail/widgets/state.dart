@@ -26,6 +26,12 @@ class CardLoaded extends CardState {
 
   @override
   List<Object> get props => [orders, totalItems, totalAmount];
+
+  CardLoaded copyWith({required List<BasketItemEntity> orders}) {
+    return CardLoaded(
+      orders: orders,
+    );
+  }
 }
 
 class CardFailure extends CardState {

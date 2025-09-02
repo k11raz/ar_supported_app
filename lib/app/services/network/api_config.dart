@@ -12,6 +12,7 @@ class ApiConfig {
       'https://rhhrrmqaptiacdkipsvx.supabase.co/auth/v1/';
 
   static const String login = 'token?grant_type=password';
+  static const String refreshToken = 'token?grant_type=refresh_token';
 
   static const String signUp = 'signup';
 

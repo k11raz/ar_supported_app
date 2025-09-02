@@ -25,7 +25,7 @@ Future<void> init() async {
   final dio = DioClient().createDio();
   sl.registerLazySingleton<Dio>(() => dio);
 
-  dio.interceptors.add(AuthInterceptor(sl<UserCacheService>()));
+  dio.interceptors.add(AuthInterceptor(sl<UserCacheService>(),dio: sl()));
   dio.interceptors.add(DioInterceptor());
 
   //cache
